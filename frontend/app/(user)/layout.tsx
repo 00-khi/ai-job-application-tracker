@@ -13,7 +13,7 @@ export default function DashboardLayout({
         <SiteHeader />
         <div className="flex flex-1">
           <AppSidebar />
-          <SidebarInset className="p-6">
+          <SidebarInset className="p-6 overflow-hidden">
             {children}
           </SidebarInset>
         </div>
