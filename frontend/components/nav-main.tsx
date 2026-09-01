@@ -16,6 +16,7 @@ import {
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
 import { ChevronRightIcon } from "lucide-react";
+import { usePathname } from "next/navigation";
 
 export function NavMain({
   items,
@@ -31,6 +32,8 @@ export function NavMain({
     }[];
   }[];
 }) {
+  const pathname = usePathname();
+
   return (
     <SidebarGroup>
       <SidebarMenu>
@@ -42,6 +45,7 @@ export function NavMain({
           >
             <SidebarMenuButton
               tooltip={item.title}
+              isActive={pathname === item.url}
               render={<a href={item.url} />}
             >
               {item.icon}

@@ -16,7 +16,8 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { ChevronsUpDownIcon, SettingsIcon, LogOutIcon } from "lucide-react";
+import { ChevronsUpDownIcon, SettingsIcon, LogOutIcon, SunIcon, MoonIcon } from "lucide-react";
+import { useTheme } from "next-themes";
 
 export function NavUser({
   user,
@@ -28,6 +29,7 @@ export function NavUser({
   };
 }) {
   const { isMobile } = useSidebar();
+  const { theme, setTheme } = useTheme();
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -75,6 +77,10 @@ export function NavUser({
               <DropdownMenuItem>
                 <SettingsIcon />
                 Settings
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
+                {theme === "dark" ? <SunIcon /> : <MoonIcon />}
+                {theme === "dark" ? "Light mode" : "Dark mode"}
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
