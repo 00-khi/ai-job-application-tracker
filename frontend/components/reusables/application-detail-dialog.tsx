@@ -1,6 +1,16 @@
 "use client";
 
-import { MapPin, Briefcase, DollarSign, Calendar, Link, Mail, User, Tag, FileText } from "lucide-react";
+import {
+  MapPin,
+  Briefcase,
+  DollarSign,
+  Calendar,
+  Link,
+  Mail,
+  User,
+  Tag,
+  FileText,
+} from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import {
@@ -15,8 +25,27 @@ import { StatusBadge } from "@/components/reusables/status-badge";
 import type { JobApplication } from "@/data/mock-data";
 
 function formatSalary(min: number, max: number, currency: string): string {
-  const fmt = (n: number) =>
-    new Intl.NumberFormat("en-US", { style: "currency", currency, maximumFractionDigits: 0 }).format(n);
+  const safeCurrency = currency?.trim().toUpperCase();
+
+  const fmt = (n: number) => {
+    try {
+      if (!Number.isFinite(n)) {
+        return "N/A";
+      }
+
+      return new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: safeCurrency,
+        maximumFractionDigits: 0,
+      }).format(n);
+    } catch {
+      // Invalid currency code → fall back to a plain number
+      return new Intl.NumberFormat("en-US", {
+        maximumFractionDigits: 0,
+      }).format(n);
+    }
+  };
+
   return `${fmt(min)} – ${fmt(max)}`;
 }
 
@@ -30,7 +59,9 @@ function formatDate(dateString: string): string {
 }
 
 function formatWorkMode(mode: string): string {
-  return mode === "on-site" ? "On-site" : mode.charAt(0).toUpperCase() + mode.slice(1);
+  return mode === "on-site"
+    ? "On-site"
+    : mode.charAt(0).toUpperCase() + mode.slice(1);
 }
 
 function formatJobType(type: string): string {
@@ -63,7 +94,15 @@ function formatOutcome(outcome: string): string {
   return map[outcome] ?? outcome;
 }
 
-function DetailRow({ icon: Icon, label, value }: { icon: React.ElementType; label: string; value: string }) {
+function DetailRow({
+  icon: Icon,
+  label,
+  value,
+}: {
+  icon: React.ElementType;
+  label: string;
+  value: string;
+}) {
   return (
     <div className="flex items-start gap-2">
       <Icon className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
@@ -90,13 +129,22 @@ function ApplicationDetailDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle className="text-base">
-            {application.company}
-          </DialogTitle>
+          <DialogTitle className="text-base">{application.company}</DialogTitle>
           <DialogDescription className="flex items-center gap-2">
             {application.title}
             <StatusBadge status={application.status} />
           </DialogDescription>
+
+          {application.jobUrl && (
+            <a
+              href={application.jobUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs text-primary underline-offset-4 hover:underline w-fit"
+            >
+              View Job Posting
+            </a>
+          )}
         </DialogHeader>
 
         <Separator />
@@ -117,7 +165,11 @@ function ApplicationDetailDialog({
             label="Salary"
             value={
               application.salaryMin != null && application.salaryMax != null
-                ? formatSalary(application.salaryMin, application.salaryMax, application.currency)
+                ? formatSalary(
+                    application.salaryMin,
+                    application.salaryMax,
+                    application.currency,
+                  )
                 : "Not specified"
             }
           />
@@ -126,11 +178,7 @@ function ApplicationDetailDialog({
             label="Date Applied"
             value={formatDate(application.dateApplied)}
           />
-          <DetailRow
-            icon={Link}
-            label="Source"
-            value={application.source}
-          />
+          <DetailRow icon={Link} label="Source" value={application.source} />
           <DetailRow
             icon={User}
             label="Contact"
@@ -232,21 +280,6 @@ function ApplicationDetailDialog({
                 ))}
               </div>
             </div>
-          </>
-        )}
-
-        {application.jobUrl && (
-          <>
-            <Separator />
-            <a
-              href={application.jobUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-sm text-primary underline-offset-4 hover:underline"
-            >
-              <Link className="size-3.5" />
-              View Job Posting
-            </a>
           </>
         )}
       </DialogContent>
