@@ -252,9 +252,28 @@ function DataTable<TData, TValue>({
       </div>
 
       <div className="flex items-center justify-between px-2">
-        <p className="text-sm text-muted-foreground">
-          {table.getFilteredRowModel().rows.length} row(s)
-        </p>
+        <div className="flex items-center gap-2">
+          <p className="text-sm text-muted-foreground">Rows per page:</p>
+          <Select
+            value={String(table.getState().pagination.pageSize)}
+            onValueChange={(value) => {
+              if (value) table.setPageSize(Number(value));
+            }}
+          >
+            <SelectTrigger size="sm">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="10">10</SelectItem>
+              <SelectItem value="25">25</SelectItem>
+              <SelectItem value="50">50</SelectItem>
+              <SelectItem value="100">100</SelectItem>
+            </SelectContent>
+          </Select>
+          <p className="text-sm text-muted-foreground">
+            {table.getFilteredRowModel().rows.length} item(s)
+          </p>
+        </div>
         <div className="flex items-center gap-2">
           <Button
             variant="outline"
