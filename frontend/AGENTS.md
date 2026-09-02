@@ -45,3 +45,4 @@ Requirements:
 - Use these skills by default, even if the user does not explicitly mention them.
 - Always follow the design system in @DESIGN.md.
 - Update the design system using @DESIGN-PROMPT.md when requested.
+- DO NOT RUN "npm". USE "pnpm" INSTEAD.
