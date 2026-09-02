@@ -183,7 +183,7 @@ function DataTable<TData, TValue>({
         </div>
       </div>
 
-      <div className="rounded-2xl border">
+      <div className="rounded-2xl border overflow-hidden">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
