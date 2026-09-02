@@ -17,7 +17,7 @@ export function PageHeader({
     <header
       data-slot="page-header"
       className={cn(
-        "gap-4 pb-6 flex flex-wrap items-center justify-between",
+        "gap-4 flex flex-wrap items-center justify-between",
         className,
       )}
     >
