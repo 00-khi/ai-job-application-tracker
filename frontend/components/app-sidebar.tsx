@@ -76,23 +76,23 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       className="top-(--header-height) h-[calc(100svh-var(--header-height))]!"
       {...props}
     >
-      {/* <SidebarHeader>
+      <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton size="lg" render={<a href="#" />}>
-              <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+            <SidebarMenuButton size="lg" render={<a href="/dashboard" />}>
+              {/* <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
                 <BriefcaseBusiness className="size-4" />
-              </div>
+              </div> */}
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">
+                <span className="truncate font-medium">Sunset</span>
+                <span className="truncate text-xs">
                   AI Job Application Tracker
                 </span>
-                <span className="truncate text-xs">Web Application</span>
               </div>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
-      </SidebarHeader> */}
+      </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
       </SidebarContent>

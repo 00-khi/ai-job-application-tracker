@@ -32,7 +32,7 @@ export function SiteHeader() {
           orientation="vertical"
           className="mr-2 data-vertical:h-4 data-vertical:self-auto"
         />
-        <h1 className="truncate">AI Job Application Tracker</h1>
+        {/* <h1 className="truncate">AI Job Application Tracker</h1> */}
       </div>
     </header>
   );
