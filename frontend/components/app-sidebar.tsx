@@ -54,11 +54,6 @@ const data = {
       icon: <MailIcon />,
     },
     {
-      title: "Job Tracker",
-      url: "/tracker",
-      icon: <BriefcaseIcon />,
-    },
-    {
       title: "Job Fit",
       url: "/job-fit",
       icon: <BarChart3Icon />,

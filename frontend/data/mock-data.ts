@@ -10,6 +10,7 @@ export type ApplicationStatus =
   | "offer"
   | "rejected"
   | "withdrawn"
+  | "declined"
   | "accepted";
 
 export type JobType = "full-time" | "part-time" | "contract" | "internship";
@@ -416,9 +417,64 @@ export const mockJobApplications: JobApplication[] = [
     updatedAt: "2025-07-25T16:00:00Z",
   },
 
-  // 10. ACCEPTED — offer accepted, starting soon
+  // 10. DECLINED — candidate declined the offer
   {
     id: "10",
+    company: "Luminar Media",
+    title: "Senior UI Engineer",
+    location: "Los Angeles, CA",
+    workMode: "hybrid",
+    jobType: "full-time",
+    salaryMin: 135000,
+    salaryMax: 165000,
+    currency: "USD",
+    status: "declined",
+    dateApplied: "2025-07-02",
+    source: "linkedin",
+    contactName: "Derek Foster",
+    contactEmail: "derek@luminarmedia.com",
+    jobUrl: "https://luminarmedia.com/careers/ui-engineer",
+    notes: "Received offer but declined — chose a better-fitting role elsewhere. Great team though.",
+    tags: ["media", "ui"],
+    interviews: [
+      {
+        id: "int-10a",
+        type: "phone-screen",
+        date: "2025-07-10",
+        time: "10:00 AM PST",
+        interviewer: "Derek Foster (HR)",
+        status: "completed",
+        outcome: "passed",
+        notes: "Positive conversation about design systems experience.",
+      },
+      {
+        id: "int-10b",
+        type: "technical",
+        date: "2025-07-18",
+        time: "1:00 PM PST",
+        interviewer: "Lead Designer + Frontend Lead",
+        status: "completed",
+        outcome: "passed",
+        notes: "UI pairing session + component architecture discussion.",
+      },
+      {
+        id: "int-10c",
+        type: "behavioral",
+        date: "2025-07-24",
+        time: "11:00 AM PST",
+        interviewer: "VP of Product",
+        status: "completed",
+        outcome: "passed",
+        notes: "Culture fit — discussed product thinking and collaboration.",
+      },
+    ],
+    createdAt: "2025-07-02T09:00:00Z",
+    updatedAt: "2025-08-05T14:00:00Z",
+  },
+
+  // 11. ACCEPTED — offer accepted, starting soon
+  {
+    id: "11",
     company: "StartupXYZ",
     title: "Frontend Engineer",
     location: "Remote",
@@ -471,3 +527,47 @@ export const mockJobApplications: JobApplication[] = [
     updatedAt: "2025-08-01T15:00:00Z",
   },
 ];
+
+// ── Stats ────────────────────────────────────────────────────────────────────
+
+export function getApplicationStats() {
+  const total = mockJobApplications.length;
+
+  const active = mockJobApplications.filter(
+    (app) => !["rejected", "withdrawn", "declined", "accepted"].includes(app.status)
+  ).length;
+
+  const saved = mockJobApplications.filter((app) => app.status === "saved").length;
+  const applied = mockJobApplications.filter((app) => app.status === "applied").length;
+  const phoneScreen = mockJobApplications.filter((app) => app.status === "phone-screen").length;
+  const interviewing = mockJobApplications.filter((app) => app.status === "interviewing").length;
+  const assessment = mockJobApplications.filter((app) => app.status === "assessment").length;
+  const finalRound = mockJobApplications.filter((app) => app.status === "final-round").length;
+  const offers = mockJobApplications.filter((app) => app.status === "offer").length;
+  const rejected = mockJobApplications.filter((app) => app.status === "rejected").length;
+  const withdrawn = mockJobApplications.filter((app) => app.status === "withdrawn").length;
+  const declined = mockJobApplications.filter((app) => app.status === "declined").length;
+  const accepted = mockJobApplications.filter((app) => app.status === "accepted").length;
+
+  const totalInterviews = mockJobApplications.reduce(
+    (sum, app) => sum + app.interviews.length,
+    0,
+  );
+
+  return {
+    total,
+    active,
+    saved,
+    applied,
+    phoneScreen,
+    interviewing,
+    assessment,
+    finalRound,
+    offers,
+    rejected,
+    withdrawn,
+    declined,
+    accepted,
+    totalInterviews,
+  };
+}
