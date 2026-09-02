@@ -251,8 +251,8 @@ function DataTable<TData, TValue>({
         </Table>
       </div>
 
-      <div className="flex items-center justify-between px-2">
-        <div className="flex items-center gap-2">
+      <div className="flex flex-wrap gap-y-4 gap-x-2 items-center justify-between px-2">
+        <div className="flex flex-wrap items-center gap-2">
           <p className="text-sm text-muted-foreground">Rows per page:</p>
           <Select
             value={String(table.getState().pagination.pageSize)}
