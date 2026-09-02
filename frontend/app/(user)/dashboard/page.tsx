@@ -19,6 +19,14 @@ export default function DashboardPage() {
         <StatCard label="Offers" value={String(stats.offers)} hint="Pending decisions" icon={Trophy} />
         <StatCard label="Rejected" value={String(stats.rejected)} hint="Did not advance" icon={XCircle} />
       </div>
+
+      <div>
+        {/* SEARCH & FILTERS */}
+      </div>
+
+      <div>
+        {/* TABLE */}
+      </div>
     </div>
   );
 }
