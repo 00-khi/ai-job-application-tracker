@@ -10,6 +10,7 @@ import {
   getPaginationRowModel,
   type ColumnDef,
   type SortingState,
+  type ColumnFiltersState,
 } from "@tanstack/react-table";
 import {
   Search,
@@ -21,6 +22,13 @@ import {
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -38,6 +46,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import type { ApplicationStatus } from "@/data/mock-data";
+import { statusConfig } from "@/components/reusables/status-badge";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -55,6 +65,9 @@ function DataTable<TData, TValue>({
   const [columnVisibility, setColumnVisibility] = React.useState<
     Record<string, boolean>
   >({});
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    [],
+  );
 
   const table = useReactTable({
     data,
@@ -66,10 +79,12 @@ function DataTable<TData, TValue>({
     onSortingChange: setSorting,
     onGlobalFilterChange: setGlobalFilter,
     onColumnVisibilityChange: setColumnVisibility,
+    onColumnFiltersChange: setColumnFilters,
     state: {
       sorting,
       globalFilter,
       columnVisibility,
+      columnFilters,
     },
     initialState: {
       pagination: {
@@ -91,34 +106,81 @@ function DataTable<TData, TValue>({
           />
         </div>
 
-        <DropdownMenu>
-          <DropdownMenuTrigger render={<Button variant="outline" size="sm" />}>
-            <SlidersHorizontal className="mr-2 size-4" />
-            Columns
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuGroup>
-              <DropdownMenuLabel>Toggle columns</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              {table
-                .getAllColumns()
-                .filter((column) => column.getCanHide())
-                .map((column) => (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) =>
-                      column.toggleVisibility(!!value)
-                    }
-                  >
-                    {typeof column.columnDef.header === "string"
-                      ? column.columnDef.header
-                      : column.id}
-                  </DropdownMenuCheckboxItem>
-                ))}
-            </DropdownMenuGroup>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <div className="flex flex-wrap items-center gap-2">
+          <Select
+            value={
+              (columnFilters.find((f) => f.id === "status")?.value as string) ??
+              "all"
+            }
+            onValueChange={(value) => {
+              table
+                .getColumn("status")
+                ?.setFilterValue(value === "all" ? undefined : [value]);
+            }}
+          >
+            <SelectTrigger className="w-[160px]" size="sm">
+              <SelectValue>
+                {(() => {
+                  const value =
+                    (columnFilters.find((f) => f.id === "status")
+                      ?.value as string) ?? "all";
+
+                  if (value === "all") return "All Statuses";
+
+                  return (
+                    statusConfig[value as ApplicationStatus]?.label ?? value
+                  );
+                })()}
+              </SelectValue>
+            </SelectTrigger>
+
+            <SelectContent>
+              <SelectItem value="all">All Statuses</SelectItem>
+
+              {(
+                Object.entries(statusConfig) as [
+                  ApplicationStatus,
+                  { label: string; className: string },
+                ][]
+              ).map(([value, { label }]) => (
+                <SelectItem key={value} value={value}>
+                  {label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger
+              render={<Button variant="outline" size="sm" />}
+            >
+              <SlidersHorizontal className="mr-2 size-4" />
+              Columns
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuGroup>
+                <DropdownMenuLabel>Toggle columns</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                {table
+                  .getAllColumns()
+                  .filter((column) => column.getCanHide())
+                  .map((column) => (
+                    <DropdownMenuCheckboxItem
+                      key={column.id}
+                      checked={column.getIsVisible()}
+                      onCheckedChange={(value) =>
+                        column.toggleVisibility(!!value)
+                      }
+                    >
+                      {typeof column.columnDef.header === "string"
+                        ? column.columnDef.header
+                        : column.id}
+                    </DropdownMenuCheckboxItem>
+                  ))}
+              </DropdownMenuGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
 
       <div className="rounded-2xl border">

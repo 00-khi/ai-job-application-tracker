@@ -68,4 +68,4 @@ function StatusBadge({
   );
 }
 
-export { StatusBadge };
+export { StatusBadge, statusConfig };
