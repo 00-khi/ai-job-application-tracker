@@ -1,7 +1,12 @@
-import React from "react";
+import { PageHeader } from "@/components/reusables/page-header";
 
-const ResumePage = () => {
-  return <div>ResumePage</div>;
-};
-
-export default ResumePage;
+export default function ResumePage() {
+  return (
+    <>
+      <PageHeader
+        title="Resume"
+        description="Build and manage your resume"
+      />
+    </>
+  );
+}
