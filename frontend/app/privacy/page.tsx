@@ -64,6 +64,31 @@ export default function PrivacyPolicyPage() {
           </section>
 
           <section className="space-y-3">
+            <h2 className="text-lg font-medium">Project Status & Data Retention</h2>
+            <p>
+              Sunset is a personal project built and maintained by one person,
+              not a company or commercial service. Because of this:
+            </p>
+            <ul className="list-disc pl-5 space-y-1.5">
+              <li>
+                Your data may be deleted without prior notice during database
+                migrations, app updates, or restructuring efforts.
+              </li>
+              <li>
+                The project may be discontinued at any time, which would result
+                in permanent loss of all user data.
+              </li>
+              <li>
+                There is no guarantee of data backups or recovery.
+              </li>
+            </ul>
+            <p>
+              I recommend keeping your own copies of any important information
+              (resumes, notes, cover letters) outside of this app.
+            </p>
+          </section>
+
+          <section className="space-y-3">
             <h2 className="text-lg font-medium">AI Features</h2>
             <p>
               The AI features (bullet points, cover letters, job fit analysis)

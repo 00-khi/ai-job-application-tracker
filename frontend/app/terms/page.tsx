@@ -94,6 +94,31 @@ export default function TermsOfServicePage() {
           </section>
 
           <section className="space-y-3">
+            <h2 className="text-lg font-medium">Service Availability & Data Loss</h2>
+            <p>
+              Sunset is a personal side project, not a commercial product. You
+              should understand:
+            </p>
+            <ul className="list-disc pl-5 space-y-1.5">
+              <li>
+                The app may go offline without notice or warning.
+              </li>
+              <li>
+                Data loss can happen during updates, migrations, or if the
+                project is discontinued.
+              </li>
+              <li>
+                I am not responsible for any data loss — no backups, no
+                guarantees, no SLA.
+              </li>
+            </ul>
+            <p>
+              Use Sunset as a helpful tool, not as your only record. Keep your
+              own backups of anything important.
+            </p>
+          </section>
+
+          <section className="space-y-3">
             <h2 className="text-lg font-medium">Changes</h2>
             <p>
               I might update these terms over time. If I make significant

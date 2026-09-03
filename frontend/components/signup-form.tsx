@@ -33,7 +33,8 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
   const router = useRouter();
   const supabase = createClient();
 
-  const isFormValid = legalChecked && password === confirmPassword && password.length >= 8;
+  const isFormValid =
+    legalChecked && password === confirmPassword && password.length >= 8;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -163,7 +164,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                   htmlFor="legal"
                   className="font-normal whitespace-nowrap flex-wrap leading-3"
                 >
-                  I have read the{" "}
+                  I have read and agree to the{" "}
                   <Link
                     href="/privacy"
                     className="underline underline-offset-4 hover:text-primary"
