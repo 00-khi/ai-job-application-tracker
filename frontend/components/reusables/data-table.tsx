@@ -2,15 +2,14 @@
 
 import * as React from "react";
 import {
-  useReactTable,
+  useTable,
+  stockFeatures,
   flexRender,
-  getCoreRowModel,
-  getSortedRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
   type ColumnDef,
   type SortingState,
   type ColumnFiltersState,
+  type StockFeatures,
+  type RowData,
 } from "@tanstack/react-table";
 import {
   Search,
@@ -49,17 +48,17 @@ import {
 import type { ApplicationStatus } from "@/data/mock-data";
 import { statusConfig } from "@/components/reusables/status-badge";
 
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
+interface DataTableProps<TData extends RowData> {
+  columns: ColumnDef<StockFeatures, TData>[];
   data: TData[];
   onRowClick?: (row: TData) => void;
 }
 
-function DataTable<TData, TValue>({
+function DataTable<TData extends RowData>({
   columns,
   data,
   onRowClick,
-}: DataTableProps<TData, TValue>) {
+}: DataTableProps<TData>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = React.useState("");
   const [columnVisibility, setColumnVisibility] = React.useState<
@@ -69,13 +68,10 @@ function DataTable<TData, TValue>({
     [],
   );
 
-  const table = useReactTable({
+  const table = useTable({
+    features: stockFeatures,
     data,
     columns,
-    getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
     onSortingChange: setSorting,
     onGlobalFilterChange: setGlobalFilter,
     onColumnVisibilityChange: setColumnVisibility,
@@ -88,6 +84,7 @@ function DataTable<TData, TValue>({
     },
     initialState: {
       pagination: {
+        pageIndex: 0,
         pageSize: 10,
       },
     },
@@ -255,7 +252,7 @@ function DataTable<TData, TValue>({
         <div className="flex flex-wrap items-center gap-2">
           <p className="text-sm text-muted-foreground">Rows per page:</p>
           <Select
-            value={String(table.getState().pagination.pageSize)}
+            value={String(table.state.pagination.pageSize)}
             onValueChange={(value) => {
               if (value) table.setPageSize(Number(value));
             }}
@@ -284,7 +281,7 @@ function DataTable<TData, TValue>({
             <ChevronLeft className="size-4" />
           </Button>
           <span className="text-sm text-muted-foreground">
-            Page {table.getState().pagination.pageIndex + 1} of{" "}
+            Page {table.state.pagination.pageIndex + 1} of{" "}
             {table.getPageCount()}
           </span>
           <Button

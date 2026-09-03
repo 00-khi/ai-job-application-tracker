@@ -17,16 +17,15 @@ import {
 import { ChevronsUpDownIcon, SettingsIcon, LogOutIcon, SunIcon, MoonIcon, ShieldCheckIcon, ScaleIcon } from "lucide-react";
 import { useTheme } from "next-themes";
 import Link from "next/link";
+import { useAuth } from "@/contexts/auth-context";
 
-export function NavUser({
-  user,
-}: {
-  user: {
-    email: string;
-  };
-}) {
+export function NavUser() {
+  const { user, signOut } = useAuth();
   const { isMobile } = useSidebar();
   const { theme, setTheme } = useTheme();
+
+  if (!user) return null;
+
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -73,7 +72,7 @@ export function NavUser({
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={signOut}>
                 <LogOutIcon />
                 Log out
               </DropdownMenuItem>

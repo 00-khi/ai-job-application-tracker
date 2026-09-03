@@ -1,6 +1,6 @@
 "use client";
 
-import { type ColumnDef } from "@tanstack/react-table";
+import { type ColumnDef, type StockFeatures } from "@tanstack/react-table";
 import type { JobApplication } from "@/data/mock-data";
 import { StatusBadge } from "@/components/reusables/status-badge";
 
@@ -14,7 +14,7 @@ function formatDate(dateString: string): string {
   });
 }
 
-export const columns: ColumnDef<JobApplication>[] = [
+export const columns: ColumnDef<StockFeatures, JobApplication>[] = [
   {
     accessorKey: "company",
     header: "Company",

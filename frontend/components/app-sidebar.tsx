@@ -18,52 +18,48 @@ import {
   FileTextIcon,
   ListIcon,
   MailIcon,
-  BriefcaseIcon,
   BarChart3Icon,
   UsersIcon,
-  TerminalIcon,
-  BriefcaseBusiness,
 } from "lucide-react";
+import { useAuth } from "@/contexts/auth-context";
 
-const data = {
-  user: {
-    email: "m@example.com",
+const navMain = [
+  {
+    title: "Dashboard",
+    url: "/dashboard",
+    icon: <LayoutDashboardIcon />,
+    isActive: true,
   },
-  navMain: [
-    {
-      title: "Dashboard",
-      url: "/dashboard",
-      icon: <LayoutDashboardIcon />,
-      isActive: true,
-    },
-    {
-      title: "Resume",
-      url: "/resume",
-      icon: <FileTextIcon />,
-    },
-    {
-      title: "Bullet Generator",
-      url: "/bullets",
-      icon: <ListIcon />,
-    },
-    {
-      title: "Cover Letter",
-      url: "/cover-letter",
-      icon: <MailIcon />,
-    },
-    {
-      title: "Job Fit",
-      url: "/job-fit",
-      icon: <BarChart3Icon />,
-    },
-    {
-      title: "Networking",
-      url: "/networking",
-      icon: <UsersIcon />,
-    },
-  ],
-};
+  {
+    title: "Resume",
+    url: "/resume",
+    icon: <FileTextIcon />,
+  },
+  {
+    title: "Bullet Generator",
+    url: "/bullets",
+    icon: <ListIcon />,
+  },
+  {
+    title: "Cover Letter",
+    url: "/cover-letter",
+    icon: <MailIcon />,
+  },
+  {
+    title: "Job Fit",
+    url: "/job-fit",
+    icon: <BarChart3Icon />,
+  },
+  {
+    title: "Networking",
+    url: "/networking",
+    icon: <UsersIcon />,
+  },
+];
+
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { user } = useAuth();
+
   return (
     <Sidebar
       className="top-(--header-height) h-[calc(100svh-var(--header-height))]!"
@@ -73,9 +69,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" render={<a href="/dashboard" />}>
-              {/* <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                <BriefcaseBusiness className="size-4" />
-              </div> */}
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-medium">Sunset</span>
                 <span className="truncate text-xs">
@@ -87,10 +80,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
+        <NavMain items={navMain} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        {user && <NavUser />}
       </SidebarFooter>
     </Sidebar>
   );

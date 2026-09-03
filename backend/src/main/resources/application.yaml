@@ -17,6 +17,12 @@ spring:
         format_sql: true
         default_schema: app
 
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${SUNSET_SUPABASE_JWT_ISSUER}
+
 jwt:
   secret: ${JWT_SECRET}
 
