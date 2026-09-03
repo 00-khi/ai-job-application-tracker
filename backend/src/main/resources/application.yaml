@@ -1,3 +1,33 @@
 spring:
   application:
     name: sunset
+
+  datasource:
+    url: ${SUNSET_DB_URL}
+    username: ${SUNSET_DB_USERNAME}
+    password: ${SUNSET_DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        default_schema: app
+
+jwt:
+  secret: ${JWT_SECRET}
+
+server:
+  port: 8080
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+
+frontend:
+  url: ${FRONTEND_URL:http://localhost:3000}
