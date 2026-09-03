@@ -19,9 +19,10 @@ src/
                 ├── SunsetApplication.java
                 ├── config/
                 ├── controller/
-                ├── model/
-                │   ├── dto/
-                │   └── entity/
+├── model/
+│   ├── dto/
+│   ├── enums/
+│   └── entity/
                 └── service/
 ```
 
@@ -43,6 +44,10 @@ src/
 - `model/`
   - Application data models.
 
+- `model/enums/`
+  - Application-wide enumeration types.
+  - Status values, type constants, and other fixed-choice fields used by entities and DTOs.
+
 - `model/dto/`
   - Data Transfer Objects used for API requests and responses.
   - Prefer DTOs at API boundaries instead of exposing entities directly.
@@ -60,7 +65,7 @@ src/
 
 - Follow the existing package structure before introducing new packages.
 - Do not create new top-level architectural packages without first discussing the reason.
-- Prefer adding classes to the existing `config`, `controller`, `model/dto`, `model/entity`, or `service` packages when they fit those responsibilities.
+- Prefer adding classes to the existing `config`, `controller`, `model/dto`, `model/enums`, `model/entity`, or `service` packages when they fit those responsibilities.
 - Keep controllers thin and services responsible for business logic.
 - Do not place DTOs and entities in the same package.
 - Do not place business logic inside DTOs, entities, or controllers unless there is a clear reason.
