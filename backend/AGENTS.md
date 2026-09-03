@@ -4,6 +4,69 @@
 
 - Keep responses concise and to the point - unless the user asks otherwise
 
+## PROJECT STRUCTURE
+
+This project is a Spring Boot Java application.
+
+Use the following structure as the **preferred project/package organization**. When creating, modifying, or suggesting files, follow this structure unless the user explicitly requests a different organization.
+
+```text
+src/
+└── main/
+    └── java/
+        └── <base-package>/
+            └── sunset/
+                ├── SunsetApplication.java
+                ├── config/
+                ├── controller/
+                ├── model/
+                │   ├── dto/
+                │   └── entity/
+                └── service/
+```
+
+### Package Responsibilities
+
+- `SunsetApplication.java`
+  - Main Spring Boot application entry point.
+  - Keep the `@SpringBootApplication` class here.
+
+- `config/`
+  - Spring configuration classes.
+  - Security configuration, application configuration, bean definitions, WebMVC configuration, etc.
+
+- `controller/`
+  - REST/API controllers.
+  - Handle HTTP requests, request validation, response mapping, and HTTP-specific concerns.
+  - Keep business logic out of controllers.
+
+- `model/`
+  - Application data models.
+
+- `model/dto/`
+  - Data Transfer Objects used for API requests and responses.
+  - Prefer DTOs at API boundaries instead of exposing entities directly.
+
+- `model/entity/`
+  - Persistence/database entities.
+  - Classes representing database tables or persisted domain data.
+
+- `service/`
+  - Business logic and application use cases.
+  - Controllers should delegate business operations to services.
+  - Keep persistence and HTTP-specific concerns separated from business logic where practical.
+
+### Structure Rules
+
+- Follow the existing package structure before introducing new packages.
+- Do not create new top-level architectural packages without first discussing the reason.
+- Prefer adding classes to the existing `config`, `controller`, `model/dto`, `model/entity`, or `service` packages when they fit those responsibilities.
+- Keep controllers thin and services responsible for business logic.
+- Do not place DTOs and entities in the same package.
+- Do not place business logic inside DTOs, entities, or controllers unless there is a clear reason.
+- Preserve consistent naming and package conventions across the project.
+- When proposing new files, explicitly identify where they belong in this structure.
+
 ## COMMAND EXECUTION
 
 - NEVER run commands.
@@ -44,5 +107,12 @@
 
 Requirements:
 
-- Use these skills by default, even if the user does not explicitly mention them.
-- NEVER run commands. The user must execute all commands manually. Only provide the commands and explain what the user needs to run.
+- Use skills by default, even if the user does not explicitly mention them.
+- For Spring Boot / Java tasks, **check and follow the relevant Spring Boot skills before planning or making changes**.
+- Use the Spring Boot skills as the primary reference for project architecture, conventions, patterns, best practices, and implementation details.
+- If a relevant skill exists for a specific concern (e.g. Spring Security, JPA, REST APIs, validation, testing, database access, or architecture), check that skill before making decisions related to that concern.
+- Follow the project's preferred folder structure defined above unless the relevant skill or an explicit user requirement requires otherwise.
+- When the project structure, existing code, and skills provide conflicting guidance, ask the user for clarification rather than assuming.
+- NEVER run commands.
+- The user must execute all commands manually.
+- Only provide the commands and explain what the user needs to run.
