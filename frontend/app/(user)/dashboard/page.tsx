@@ -11,8 +11,9 @@ import { DeleteApplicationDialog } from "@/components/job-application/delete-app
 import { usePaginatedApplications } from "@/hooks/usePaginatedApplications"
 import type { JobApplication } from "@/data/mock-data"
 import { columns } from "./columns"
-import { Briefcase, Calendar, Trophy, XCircle, Plus, Loader2Icon } from "lucide-react"
+import { Briefcase, Calendar, Trophy, XCircle, Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { DashboardSkeleton } from "@/components/reusables/dashboard-skeleton"
 
 export default function DashboardPage() {
   const {
@@ -60,14 +61,7 @@ export default function DashboardPage() {
   }
 
   if (loading && data.content.length === 0) {
-    return (
-      <div className="space-y-6">
-        <PageHeader title="Dashboard" description="Track and manage your job applications" />
-        <div className="flex items-center justify-center py-12">
-          <Loader2Icon className="size-6 animate-spin text-muted-foreground" />
-        </div>
-      </div>
-    )
+    return <DashboardSkeleton />
   }
 
   if (error) {
