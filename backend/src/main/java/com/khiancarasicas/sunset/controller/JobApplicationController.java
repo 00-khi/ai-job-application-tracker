@@ -2,6 +2,10 @@ package com.khiancarasicas.sunset.controller;
 
 import com.khiancarasicas.sunset.model.dto.JobApplicationRequest;
 import com.khiancarasicas.sunset.model.dto.JobApplicationResponse;
+import com.khiancarasicas.sunset.model.dto.JobApplicationSearchRequest;
+import com.khiancarasicas.sunset.model.dto.JobApplicationStatsResponse;
+import com.khiancarasicas.sunset.model.dto.PaginatedResponse;
+import com.khiancarasicas.sunset.model.enums.ApplicationStatus;
 import com.khiancarasicas.sunset.service.JobApplicationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,10 +25,25 @@ public class JobApplicationController {
     private final JobApplicationService jobApplicationService;
 
     @GetMapping
-    public ResponseEntity<List<JobApplicationResponse>> list(
-            @AuthenticationPrincipal Jwt jwt) {
+    public ResponseEntity<PaginatedResponse<JobApplicationResponse>> list(
+            @AuthenticationPrincipal Jwt jwt,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) ApplicationStatus status,
+            @RequestParam(defaultValue = "createdAt") String sortBy,
+            @RequestParam(defaultValue = "desc") String sortDirection) {
         String userId = jwt.getSubject();
-        return ResponseEntity.ok(jobApplicationService.listAll(userId));
+
+        JobApplicationSearchRequest request = new JobApplicationSearchRequest();
+        request.setPage(page);
+        request.setSize(size);
+        request.setSearch(search);
+        request.setStatus(status);
+        request.setSortBy(sortBy);
+        request.setSortDirection(sortDirection);
+
+        return ResponseEntity.ok(jobApplicationService.search(userId, request));
     }
 
     @GetMapping("/{id}")
@@ -60,5 +79,12 @@ public class JobApplicationController {
         String userId = jwt.getSubject();
         jobApplicationService.delete(userId, id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/stats")
+    public ResponseEntity<JobApplicationStatsResponse> getStats(
+            @AuthenticationPrincipal Jwt jwt) {
+        String userId = jwt.getSubject();
+        return ResponseEntity.ok(jobApplicationService.getStats(userId));
     }
 }

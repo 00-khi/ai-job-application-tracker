@@ -1,6 +1,5 @@
 "use client";
 
-import { type ColumnDef, type StockFeatures } from "@tanstack/react-table";
 import type { JobApplication } from "@/data/mock-data";
 import { StatusBadge } from "@/components/reusables/status-badge";
 import {
@@ -11,6 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import type { Column } from "@/components/reusables/data-table";
 
 function formatDate(dateString: string): string {
   if (!dateString) return "Not applied";
@@ -28,49 +28,58 @@ export function columns({
 }: {
   onEdit: (app: JobApplication) => void;
   onDelete: (app: JobApplication) => void;
-}): ColumnDef<StockFeatures, JobApplication>[] {
+}): Column<JobApplication>[] {
   return [
     {
-      accessorKey: "company",
+      id: "company",
       header: "Company",
-      cell: ({ row }) => (
-        <span className="font-semibold">{row.original.company}</span>
+      accessorKey: "company",
+      sortable: true,
+      cell: (row) => (
+        <span className="font-semibold">{row.company}</span>
       ),
     },
     {
-      accessorKey: "title",
+      id: "title",
       header: "Title",
-      cell: ({ row }) => (
-        <span className="text-muted-foreground">{row.original.title}</span>
+      accessorKey: "title",
+      sortable: true,
+      cell: (row) => (
+        <span className="text-muted-foreground">{row.title}</span>
       ),
     },
     {
-      accessorKey: "status",
+      id: "status",
       header: "Status",
-      cell: ({ row }) => <StatusBadge status={row.original.status} />,
+      accessorKey: "status",
+      sortable: true,
+      cell: (row) => <StatusBadge status={row.status} />,
     },
     {
-      accessorKey: "dateApplied",
+      id: "dateApplied",
       header: "Date Applied",
-      cell: ({ row }) => (
+      accessorKey: "dateApplied",
+      sortable: true,
+      cell: (row) => (
         <span
           className={
-            row.original.dateApplied ? "" : "text-muted-foreground italic"
+            row.dateApplied ? "" : "text-muted-foreground italic"
           }
         >
-          {formatDate(row.original.dateApplied)}
+          {formatDate(row.dateApplied)}
         </span>
       ),
     },
     {
-      accessorKey: "location",
+      id: "location",
       header: "Location",
+      accessorKey: "location",
+      sortable: true,
     },
     {
       id: "actions",
       header: "",
-      cell: ({ row }) => {
-        const app = row.original;
+      cell: (row) => {
         return (
           <div onClick={(e) => e.stopPropagation()}>
             <DropdownMenu>
@@ -83,13 +92,13 @@ export function columns({
                 <span className="sr-only">Actions</span>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => onEdit(app)}>
+                <DropdownMenuItem onClick={() => onEdit(row)}>
                   <Pencil className="size-4" />
                   Edit
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   variant="destructive"
-                  onClick={() => onDelete(app)}
+                  onClick={() => onDelete(row)}
                 >
                   <Trash2 className="size-4" />
                   Delete

@@ -1,5 +1,6 @@
 import { apiFetch } from "@/lib/api";
 import type { JobApplication } from "@/data/mock-data";
+import type { PaginatedResponse, SearchParams, ApplicationStats } from "@/lib/types";
 
 export type { JobApplication };
 
@@ -72,6 +73,39 @@ export async function fetchApplications(): Promise<JobApplication[]> {
   if (!res.ok) throw new Error("Failed to fetch applications");
   const data = await res.json();
   return (data as Record<string, unknown>[]).map(mapApplicationFromBackend);
+}
+
+export async function fetchApplicationsPaginated(
+  params: SearchParams = {},
+): Promise<PaginatedResponse<JobApplication>> {
+  const searchParams = new URLSearchParams();
+
+  if (params.page !== undefined) searchParams.set("page", String(params.page));
+  if (params.size !== undefined) searchParams.set("size", String(params.size));
+  if (params.search) searchParams.set("search", params.search);
+  if (params.status) searchParams.set("status", params.status);
+  if (params.sortBy) searchParams.set("sortBy", params.sortBy);
+  if (params.sortDirection) searchParams.set("sortDirection", params.sortDirection);
+
+  const query = searchParams.toString();
+  const url = `/api/job-applications${query ? `?${query}` : ""}`;
+
+  const res = await apiFetch(url);
+  if (!res.ok) throw new Error("Failed to fetch applications");
+
+  const data = await res.json();
+  const paginated = data as PaginatedResponse<Record<string, unknown>>;
+
+  return {
+    ...paginated,
+    content: paginated.content.map(mapApplicationFromBackend),
+  };
+}
+
+export async function fetchApplicationStats(): Promise<ApplicationStats> {
+  const res = await apiFetch("/api/job-applications/stats");
+  if (!res.ok) throw new Error("Failed to fetch stats");
+  return res.json();
 }
 
 export async function fetchApplication(id: string): Promise<JobApplication> {

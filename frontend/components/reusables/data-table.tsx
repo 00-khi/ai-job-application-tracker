@@ -2,20 +2,12 @@
 
 import * as React from "react";
 import {
-  useTable,
-  stockFeatures,
-  flexRender,
-  type ColumnDef,
-  type SortingState,
-  type ColumnFiltersState,
-  type StockFeatures,
-  type RowData,
-} from "@tanstack/react-table";
-import {
   Search,
   ChevronLeft,
   ChevronRight,
   SlidersHorizontal,
+  ChevronUp,
+  ChevronDown,
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -48,47 +40,78 @@ import {
 import type { ApplicationStatus } from "@/data/mock-data";
 import { statusConfig } from "@/components/reusables/status-badge";
 
-interface DataTableProps<TData extends RowData> {
-  columns: ColumnDef<StockFeatures, TData>[];
-  data: TData[];
-  onRowClick?: (row: TData) => void;
+interface ServerPagination {
+  page: number;
+  pageSize: number;
+  totalElements: number;
+  totalPages: number;
+  hasNext: boolean;
+  hasPrevious: boolean;
 }
 
-function DataTable<TData extends RowData>({
+interface ServerSorting {
+  sortBy: string;
+  sortDirection: "asc" | "desc";
+}
+
+interface Column<T> {
+  id: string;
+  header: string;
+  accessorKey?: string;
+  sortable?: boolean;
+  cell?: (row: T) => React.ReactNode;
+  hide?: boolean;
+}
+
+interface DataTableProps<T> {
+  columns: Column<T>[];
+  data: T[];
+  onRowClick?: (row: T) => void;
+  search?: string;
+  onSearchChange?: (value: string) => void;
+  statusFilter?: string;
+  onStatusFilterChange?: (value: string | undefined) => void;
+  pagination?: ServerPagination;
+  onPageChange?: (page: number) => void;
+  onPageSizeChange?: (size: number) => void;
+  sorting?: ServerSorting;
+  onSortingChange?: (column: string, direction: "asc" | "desc") => void;
+}
+
+function DataTable<T>({
   columns,
   data,
   onRowClick,
-}: DataTableProps<TData>) {
-  const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [globalFilter, setGlobalFilter] = React.useState("");
-  const [columnVisibility, setColumnVisibility] = React.useState<
-    Record<string, boolean>
-  >({});
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    [],
-  );
+  search,
+  onSearchChange,
+  statusFilter,
+  onStatusFilterChange,
+  pagination,
+  onPageChange,
+  onPageSizeChange,
+  sorting,
+  onSortingChange,
+}: DataTableProps<T>) {
+  const [hiddenColumns, setHiddenColumns] = React.useState<Set<string>>(new Set());
 
-  const table = useTable({
-    features: stockFeatures,
-    data,
-    columns,
-    onSortingChange: setSorting,
-    onGlobalFilterChange: setGlobalFilter,
-    onColumnVisibilityChange: setColumnVisibility,
-    onColumnFiltersChange: setColumnFilters,
-    state: {
-      sorting,
-      globalFilter,
-      columnVisibility,
-      columnFilters,
-    },
-    initialState: {
-      pagination: {
-        pageIndex: 0,
-        pageSize: 10,
-      },
-    },
-  });
+  const visibleColumns = columns.filter((col) => !col.hide && !hiddenColumns.has(col.id));
+
+  const handleSort = (columnId: string) => {
+    if (!onSortingChange || !sorting) return;
+
+    const currentDirection = sorting.sortBy === columnId ? sorting.sortDirection : undefined;
+    const newDirection: "asc" | "desc" = currentDirection === "asc" ? "desc" : "asc";
+    onSortingChange(columnId, newDirection);
+  };
+
+  const getSortIndicator = (columnId: string) => {
+    if (!sorting || sorting.sortBy !== columnId) return null;
+    return sorting.sortDirection === "asc" ? (
+      <ChevronUp className="size-4" />
+    ) : (
+      <ChevronDown className="size-4" />
+    );
+  };
 
   return (
     <div className="space-y-4">
@@ -97,35 +120,23 @@ function DataTable<TData extends RowData>({
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
           <Input
             placeholder="Search..."
-            value={globalFilter}
-            onChange={(e) => setGlobalFilter(e.target.value)}
+            value={search ?? ""}
+            onChange={(e) => onSearchChange?.(e.target.value)}
             className="pl-9"
           />
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
           <Select
-            value={
-              (columnFilters.find((f) => f.id === "status")?.value as string) ??
-              "all"
-            }
-            onValueChange={(value) => {
-              table
-                .getColumn("status")
-                ?.setFilterValue(value === "all" ? undefined : [value]);
-            }}
+            value={statusFilter ?? "all"}
+            onValueChange={(value) => onStatusFilterChange?.(value!)}
           >
             <SelectTrigger className="w-[160px]" size="sm">
               <SelectValue>
                 {(() => {
-                  const value =
-                    (columnFilters.find((f) => f.id === "status")
-                      ?.value as string) ?? "all";
-
-                  if (value === "all") return "All Statuses";
-
+                  if (!statusFilter || statusFilter === "all") return "All Statuses";
                   return (
-                    statusConfig[value as ApplicationStatus]?.label ?? value
+                    statusConfig[statusFilter as ApplicationStatus]?.label ?? statusFilter
                   );
                 })()}
               </SelectValue>
@@ -158,20 +169,25 @@ function DataTable<TData extends RowData>({
               <DropdownMenuGroup>
                 <DropdownMenuLabel>Toggle columns</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                {table
-                  .getAllColumns()
-                  .filter((column) => column.getCanHide())
+                {columns
+                  .filter((col) => !col.hide)
                   .map((column) => (
                     <DropdownMenuCheckboxItem
                       key={column.id}
-                      checked={column.getIsVisible()}
-                      onCheckedChange={(value) =>
-                        column.toggleVisibility(!!value)
-                      }
+                      checked={!hiddenColumns.has(column.id)}
+                      onCheckedChange={(checked) => {
+                        setHiddenColumns((prev) => {
+                          const next = new Set(prev);
+                          if (checked) {
+                            next.delete(column.id);
+                          } else {
+                            next.add(column.id);
+                          }
+                          return next;
+                        });
+                      }}
                     >
-                      {typeof column.columnDef.header === "string"
-                        ? column.columnDef.header
-                        : column.id}
+                      {column.header}
                     </DropdownMenuCheckboxItem>
                   ))}
               </DropdownMenuGroup>
@@ -183,53 +199,46 @@ function DataTable<TData extends RowData>({
       <div className="rounded-2xl border overflow-hidden">
         <Table>
           <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <TableHead
-                    key={header.id}
-                    className={cn(
-                      header.column.getCanSort() &&
-                        "cursor-pointer select-none hover:text-foreground",
+            <TableRow>
+              {visibleColumns.map((column) => (
+                <TableHead
+                  key={column.id}
+                  className={cn(
+                    column.sortable && "cursor-pointer select-none hover:text-foreground",
+                  )}
+                  onClick={column.sortable ? () => handleSort(column.id) : undefined}
+                >
+                  <div className="flex items-center gap-2">
+                    {column.header}
+                    {column.sortable && (
+                      <span className="text-muted-foreground">
+                        {getSortIndicator(column.id) ?? (
+                          <span className="opacity-30">
+                            <ChevronUp className="size-4" />
+                          </span>
+                        )}
+                      </span>
                     )}
-                    onClick={header.column.getToggleSortingHandler()}
-                  >
-                    <div className="flex items-center gap-2">
-                      {header.isPlaceholder
-                        ? null
-                        : typeof header.column.columnDef.header === "function"
-                          ? header.column.columnDef.header(header.getContext())
-                          : header.column.columnDef.header}
-                      {header.column.getCanSort() && (
-                        <span className="text-muted-foreground">
-                          {header.column.getIsSorted() === "asc"
-                            ? "\u2191"
-                            : header.column.getIsSorted() === "desc"
-                              ? "\u2193"
-                              : "\u2195"}
-                        </span>
-                      )}
-                    </div>
-                  </TableHead>
-                ))}
-              </TableRow>
-            ))}
+                  </div>
+                </TableHead>
+              ))}
+            </TableRow>
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
+            {data.length ? (
+              data.map((row, rowIndex) => (
                 <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
+                  key={rowIndex}
                   className={cn(onRowClick && "cursor-pointer")}
-                  onClick={() => onRowClick?.(row.original)}
+                  onClick={() => onRowClick?.(row)}
                 >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext(),
-                      )}
+                  {visibleColumns.map((column) => (
+                    <TableCell key={column.id}>
+                      {column.cell
+                        ? column.cell(row)
+                        : column.accessorKey
+                          ? String((row as Record<string, unknown>)[column.accessorKey] ?? "")
+                          : null}
                     </TableCell>
                   ))}
                 </TableRow>
@@ -237,7 +246,7 @@ function DataTable<TData extends RowData>({
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={columns.length}
+                  colSpan={visibleColumns.length}
                   className="h-24 text-center text-muted-foreground"
                 >
                   No results.
@@ -252,10 +261,8 @@ function DataTable<TData extends RowData>({
         <div className="flex flex-wrap items-center gap-2">
           <p className="text-sm text-muted-foreground">Rows per page:</p>
           <Select
-            value={String(table.state.pagination.pageSize)}
-            onValueChange={(value) => {
-              if (value) table.setPageSize(Number(value));
-            }}
+            value={String(pagination?.pageSize ?? 10)}
+            onValueChange={(value) => onPageSizeChange?.(Number(value))}
           >
             <SelectTrigger size="sm">
               <SelectValue />
@@ -268,27 +275,27 @@ function DataTable<TData extends RowData>({
             </SelectContent>
           </Select>
           <p className="text-sm text-muted-foreground">
-            {table.getFilteredRowModel().rows.length} item(s)
+            {pagination?.totalElements ?? 0} item(s)
           </p>
         </div>
         <div className="flex items-center gap-2">
           <Button
             variant="outline"
             size="icon-sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
+            onClick={() => onPageChange?.((pagination?.page ?? 0) - 1)}
+            disabled={!pagination?.hasPrevious}
           >
             <ChevronLeft className="size-4" />
           </Button>
           <span className="text-sm text-muted-foreground">
-            Page {table.state.pagination.pageIndex + 1} of{" "}
-            {table.getPageCount()}
+            Page {(pagination?.page ?? 0) + 1} of{" "}
+            {pagination?.totalPages ?? 1}
           </span>
           <Button
             variant="outline"
             size="icon-sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
+            onClick={() => onPageChange?.((pagination?.page ?? 0) + 1)}
+            disabled={!pagination?.hasNext}
           >
             <ChevronRight className="size-4" />
           </Button>
@@ -298,4 +305,4 @@ function DataTable<TData extends RowData>({
   );
 }
 
-export { DataTable, type DataTableProps };
+export { DataTable, type DataTableProps, type ServerPagination, type ServerSorting, type Column };

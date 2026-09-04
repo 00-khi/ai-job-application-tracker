@@ -8,14 +8,34 @@ import { ApplicationDetailDialog } from "@/components/reusables/application-deta
 import { CreateApplicationDialog } from "@/components/job-application/create-application-dialog"
 import { EditApplicationDialog } from "@/components/job-application/edit-application-dialog"
 import { DeleteApplicationDialog } from "@/components/job-application/delete-application-dialog"
-import { useJobApplications } from "@/hooks/useJobApplications"
+import { usePaginatedApplications } from "@/hooks/usePaginatedApplications"
 import type { JobApplication } from "@/data/mock-data"
 import { columns } from "./columns"
 import { Briefcase, Calendar, Trophy, XCircle, Plus, Loader2Icon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 export default function DashboardPage() {
-  const { applications, loading, error, create, update, remove } = useJobApplications()
+  const {
+    data,
+    stats,
+    loading,
+    error,
+    search,
+    status,
+    page,
+    pageSize,
+    sortBy,
+    sortDirection,
+    handleSearch,
+    handleStatusChange,
+    handlePageChange,
+    handlePageSizeChange,
+    handleSort,
+    create,
+    update,
+    remove,
+  } = usePaginatedApplications()
+
   const [selectedApplication, setSelectedApplication] = useState<JobApplication | null>(null)
   const [detailOpen, setDetailOpen] = useState(false)
   const [createOpen, setCreateOpen] = useState(false)
@@ -23,13 +43,6 @@ export default function DashboardPage() {
   const [editOpen, setEditOpen] = useState(false)
   const [deleteApplication, setDeleteApplication] = useState<JobApplication | null>(null)
   const [deleteOpen, setDeleteOpen] = useState(false)
-
-  const stats = {
-    total: applications.length,
-    totalInterviews: applications.reduce((sum, app) => sum + app.interviews.length, 0),
-    offers: applications.filter((app) => app.status === "OFFER").length,
-    rejected: applications.filter((app) => app.status === "REJECTED").length,
-  }
 
   function handleRowClick(application: JobApplication) {
     setSelectedApplication(application)
@@ -46,7 +59,7 @@ export default function DashboardPage() {
     setDeleteOpen(true)
   }
 
-  if (loading) {
+  if (loading && data.content.length === 0) {
     return (
       <div className="space-y-6">
         <PageHeader title="Dashboard" description="Track and manage your job applications" />
@@ -82,16 +95,52 @@ export default function DashboardPage() {
       />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard label="Applications" value={String(stats.total)} hint="Total tracked" icon={Briefcase} />
-        <StatCard label="Interviews" value={String(stats.totalInterviews)} hint="Across all apps" icon={Calendar} />
-        <StatCard label="Offers" value={String(stats.offers)} hint="Pending decisions" icon={Trophy} />
-        <StatCard label="Rejected" value={String(stats.rejected)} hint="Did not advance" icon={XCircle} />
+        <StatCard
+          label="Applications"
+          value={String(stats?.total ?? 0)}
+          hint="Total tracked"
+          icon={Briefcase}
+        />
+        <StatCard
+          label="Interviews"
+          value={String(stats?.totalInterviews ?? 0)}
+          hint="Across all apps"
+          icon={Calendar}
+        />
+        <StatCard
+          label="Offers"
+          value={String(stats?.offers ?? 0)}
+          hint="Pending decisions"
+          icon={Trophy}
+        />
+        <StatCard
+          label="Rejected"
+          value={String(stats?.rejected ?? 0)}
+          hint="Did not advance"
+          icon={XCircle}
+        />
       </div>
 
       <DataTable
         columns={columns({ onEdit: handleEdit, onDelete: handleDelete })}
-        data={applications}
+        data={data.content}
         onRowClick={handleRowClick}
+        search={search}
+        onSearchChange={handleSearch}
+        statusFilter={status}
+        onStatusFilterChange={handleStatusChange}
+        pagination={{
+          page: data.page,
+          pageSize: data.size,
+          totalElements: data.totalElements,
+          totalPages: data.totalPages,
+          hasNext: data.hasNext,
+          hasPrevious: data.hasPrevious,
+        }}
+        onPageChange={handlePageChange}
+        onPageSizeChange={handlePageSizeChange}
+        sorting={{ sortBy, sortDirection }}
+        onSortingChange={handleSort}
       />
 
       <ApplicationDetailDialog
