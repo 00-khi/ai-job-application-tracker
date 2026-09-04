@@ -79,6 +79,7 @@ export function columns({
     {
       id: "actions",
       header: "",
+      hideFromColumnToggle: true,
       cell: (row) => {
         return (
           <div onClick={(e) => e.stopPropagation()}>

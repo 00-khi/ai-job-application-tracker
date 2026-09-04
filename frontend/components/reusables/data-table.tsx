@@ -61,6 +61,7 @@ interface Column<T> {
   sortable?: boolean;
   cell?: (row: T) => React.ReactNode;
   hide?: boolean;
+  hideFromColumnToggle?: boolean;
 }
 
 interface DataTableProps<T> {
@@ -170,7 +171,7 @@ function DataTable<T>({
                 <DropdownMenuLabel>Toggle columns</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 {columns
-                  .filter((col) => !col.hide)
+                  .filter((col) => !col.hide && !col.hideFromColumnToggle)
                   .map((column) => (
                     <DropdownMenuCheckboxItem
                       key={column.id}
