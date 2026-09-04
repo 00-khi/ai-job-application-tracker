@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "sonner";
 import {
@@ -28,26 +28,28 @@ export default function UpdatePasswordPage() {
   const [loading, setLoading] = useState(false);
   const [ready, setReady] = useState(false);
   const router = useRouter();
-  const searchParams = useSearchParams();
   const supabase = createClient();
 
   useEffect(() => {
-    const code = searchParams.get("code");
+    const hasVerification = document.cookie
+      .split("; ")
+      .some(c => c.startsWith("password_reset_verified="));
 
-    if (code) {
-      supabase.auth.exchangeCodeForSession(code).then(({ error }) => {
-        if (error) {
-          toast.error("Invalid or expired reset link");
-          router.push("/login");
-        } else {
-          setReady(true);
-        }
-      });
-    } else {
-      toast.error("Invalid reset link");
+    if (!hasVerification) {
+      toast.error("Invalid or expired reset link");
       router.push("/login");
+      return;
     }
-  }, [searchParams, supabase, router]);
+
+    supabase.auth.getUser().then(({ data: { user }, error }) => {
+      if (error || !user) {
+        toast.error("Invalid or expired reset link");
+        router.push("/login");
+      } else {
+        setReady(true);
+      }
+    });
+  }, [supabase, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -74,6 +76,9 @@ export default function UpdatePasswordPage() {
       setLoading(false);
       return;
     }
+
+    // Clear the verification cookie
+    document.cookie = "password_reset_verified=; path=/; max-age=0";
 
     toast.success("Password updated! Please log in with your new password.");
     await supabase.auth.signOut();
