@@ -17,6 +17,13 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
@@ -31,6 +38,10 @@ export function LoginForm({
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [resetOpen, setResetOpen] = useState(false);
+  const [resetEmail, setResetEmail] = useState("");
+  const [resetLoading, setResetLoading] = useState(false);
+  const [resetSent, setResetSent] = useState(false);
   const router = useRouter();
   const supabase = createClient();
 
@@ -52,6 +63,24 @@ export function LoginForm({
 
     toast.success("Logged in successfully");
     router.push("/dashboard");
+  };
+
+  const handleResetPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setResetLoading(true);
+
+    const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
+      redirectTo: `${window.location.origin}/auth/update-password`,
+    });
+
+    if (error) {
+      toast.error(error.message);
+      setResetLoading(false);
+      return;
+    }
+
+    setResetSent(true);
+    setResetLoading(false);
   };
 
   return (
@@ -80,12 +109,17 @@ export function LoginForm({
               <Field>
                 <div className="flex items-center">
                   <FieldLabel htmlFor="password">Password</FieldLabel>
-                  <a
-                    href="#"
+                  <button
+                    type="button"
                     className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
+                    onClick={() => {
+                      setResetOpen(true);
+                      setResetEmail(email);
+                      setResetSent(false);
+                    }}
                   >
                     Forgot your password?
-                  </a>
+                  </button>
                 </div>
                 <Input
                   id="password"
@@ -116,6 +150,50 @@ export function LoginForm({
           </form>
         </CardContent>
       </Card>
+
+      <Dialog open={resetOpen} onOpenChange={setResetOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Reset your password</DialogTitle>
+            <DialogDescription>
+              Enter your email and we&apos;ll send you a link to reset your
+              password.
+            </DialogDescription>
+          </DialogHeader>
+          {resetSent ? (
+            <div className="grid gap-4">
+              <p className="text-sm text-muted-foreground">
+                Check <span className="font-medium text-foreground">{resetEmail}</span> for a
+                password reset link.
+              </p>
+              <Button variant="outline" onClick={() => setResetOpen(false)}>
+                Close
+              </Button>
+            </div>
+          ) : (
+            <form onSubmit={handleResetPassword} className="grid gap-4">
+              <Field>
+                <FieldLabel htmlFor="reset-email">Email</FieldLabel>
+                <Input
+                  id="reset-email"
+                  type="email"
+                  placeholder="m@example.com"
+                  required
+                  value={resetEmail}
+                  onChange={(e) => setResetEmail(e.target.value)}
+                />
+              </Field>
+              <Button type="submit" disabled={resetLoading}>
+                {resetLoading ? (
+                  <Loader2Icon className="animate-spin" />
+                ) : (
+                  "Send reset link"
+                )}
+              </Button>
+            </form>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
