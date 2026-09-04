@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { PageHeader } from "@/components/reusables/page-header"
 import { StatCard } from "@/components/reusables/stat-card"
 import { DataTable } from "@/components/reusables/data-table"
@@ -32,6 +32,7 @@ export default function DashboardPage() {
     handlePageChange,
     handlePageSizeChange,
     handleSort,
+    refetch,
     create,
     update,
     remove,
@@ -59,6 +60,15 @@ export default function DashboardPage() {
     setDeleteApplication(application)
     setDeleteOpen(true)
   }
+
+  useEffect(() => {
+    if (selectedApplication && data.content.length > 0) {
+      const fresh = data.content.find(app => app.id === selectedApplication.id)
+      if (fresh && fresh !== selectedApplication) {
+        setSelectedApplication(fresh)
+      }
+    }
+  }, [data.content, selectedApplication?.id])
 
   if (loading && data.content.length === 0) {
     return <DashboardSkeleton />
@@ -143,6 +153,7 @@ export default function DashboardPage() {
         onOpenChange={setDetailOpen}
         onEdit={handleEdit}
         onDelete={handleDelete}
+        onInterviewsChanged={refetch}
       />
 
       <CreateApplicationDialog

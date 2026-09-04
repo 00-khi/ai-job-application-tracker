@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import {
   MapPin,
   Briefcase,
@@ -12,6 +13,7 @@ import {
   FileText,
   Pencil,
   Trash2,
+  Plus,
 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
@@ -26,7 +28,16 @@ import {
 } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
 import { StatusBadge } from "@/components/reusables/status-badge";
-import type { JobApplication } from "@/data/mock-data";
+import { CreateInterviewDialog } from "@/components/interview/create-interview-dialog";
+import { EditInterviewDialog } from "@/components/interview/edit-interview-dialog";
+import { DeleteInterviewDialog } from "@/components/interview/delete-interview-dialog";
+import {
+  createInterview,
+  updateInterview,
+  deleteInterview,
+  type CreateInterviewInput,
+  type JobApplication,
+} from "@/lib/job-applications";
 
 function formatSalary(min: number, max: number, currency: string): string {
   const safeCurrency = currency?.trim().toUpperCase();
@@ -119,14 +130,38 @@ function ApplicationDetailDialog({
   onOpenChange,
   onEdit,
   onDelete,
+  onInterviewsChanged,
 }: {
   application: JobApplication | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onEdit?: (app: JobApplication) => void;
   onDelete?: (app: JobApplication) => void;
+  onInterviewsChanged?: () => void;
 }) {
+  const [createDialogOpen, setCreateDialogOpen] = useState(false);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [selectedInterview, setSelectedInterview] = useState<JobApplication["interviews"][number] | null>(null);
+
   if (!application) return null;
+
+  const handleCreateInterview = async (data: CreateInterviewInput) => {
+    await createInterview(application.id, data);
+    onInterviewsChanged?.();
+  };
+
+  const handleUpdateInterview = async (data: CreateInterviewInput) => {
+    if (!selectedInterview) return;
+    await updateInterview(application.id, selectedInterview.id, data);
+    onInterviewsChanged?.();
+  };
+
+  const handleDeleteInterview = async () => {
+    if (!selectedInterview) return;
+    await deleteInterview(application.id, selectedInterview.id);
+    onInterviewsChanged?.();
+  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -228,63 +263,124 @@ function ApplicationDetailDialog({
           </>
         )}
 
-        {application.interviews.length > 0 && (
-          <>
-            <Separator />
-            <div>
-              <p className="mb-2 text-xs font-medium text-muted-foreground">
-                Interviews
-              </p>
-              <div className="space-y-2">
-                {application.interviews.map((interview) => (
-                  <div
-                    key={interview.id}
-                    className="rounded-xl border border-border bg-muted/40 p-3"
-                  >
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium">
-                        {formatInterviewType(interview.type)}
-                      </span>
+        <Separator />
+        <div>
+          <div className="mb-2 flex items-center justify-between">
+            <p className="text-xs font-medium text-muted-foreground">
+              Interviews
+            </p>
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-7 text-xs"
+              onClick={() => setCreateDialogOpen(true)}
+            >
+              <Plus className="size-3" />
+              Add
+            </Button>
+          </div>
+          {application.interviews.length > 0 ? (
+            <div className="space-y-2">
+              {application.interviews.map((interview) => (
+                <div
+                  key={interview.id}
+                  className="rounded-xl border border-border bg-muted/40 p-3"
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium">
+                      {formatInterviewType(interview.type)}
+                    </span>
+                    <div className="flex items-center gap-2">
                       <span className="text-xs text-muted-foreground">
                         {formatDate(interview.date)}
                         {interview.time ? ` · ${interview.time}` : ""}
                       </span>
-                    </div>
-                    {interview.interviewer && (
-                      <p className="mt-1 text-xs text-muted-foreground">
-                        {interview.interviewer}
-                      </p>
-                    )}
-                    <div className="mt-2 flex items-center gap-2">
-                      <Badge variant="outline" className="text-xs">
-                        {formatInterviewStatus(interview.status)}
-                      </Badge>
-                      {interview.outcome && (
-                        <Badge
-                          variant="outline"
-                          className={`text-xs ${
-                            interview.outcome === "PASSED"
-                              ? "border-green-300 text-green-600 dark:border-green-600 dark:text-green-400"
-                              : interview.outcome === "FAILED"
-                                ? "border-red-300 text-red-600 dark:border-red-600 dark:text-red-400"
-                                : ""
-                          }`}
+                      <div className="flex items-center gap-1">
+                        <Button
+                          variant="ghost"
+                          size="icon-sm"
+                          className="h-6 w-6"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedInterview(interview);
+                            setEditDialogOpen(true);
+                          }}
                         >
-                          {formatOutcome(interview.outcome)}
-                        </Badge>
-                      )}
+                          <Pencil className="size-3" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon-sm"
+                          className="h-6 w-6 text-destructive hover:text-destructive"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedInterview(interview);
+                            setDeleteDialogOpen(true);
+                          }}
+                        >
+                          <Trash2 className="size-3" />
+                        </Button>
+                      </div>
                     </div>
-                    {interview.notes && (
-                      <p className="mt-2 text-xs text-muted-foreground">
-                        {interview.notes}
-                      </p>
+                  </div>
+                  {interview.interviewer && (
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      {interview.interviewer}
+                    </p>
+                  )}
+                  <div className="mt-2 flex items-center gap-2">
+                    <Badge variant="outline" className="text-xs">
+                      {formatInterviewStatus(interview.status)}
+                    </Badge>
+                    {interview.outcome && (
+                      <Badge
+                        variant="outline"
+                        className={`text-xs ${
+                          interview.outcome === "PASSED"
+                            ? "border-green-300 text-green-600 dark:border-green-600 dark:text-green-400"
+                            : interview.outcome === "FAILED"
+                              ? "border-red-300 text-red-600 dark:border-red-600 dark:text-red-400"
+                              : ""
+                        }`}
+                      >
+                        {formatOutcome(interview.outcome)}
+                      </Badge>
                     )}
                   </div>
-                ))}
-              </div>
+                  {interview.notes && (
+                    <p className="mt-2 text-xs text-muted-foreground">
+                      {interview.notes}
+                    </p>
+                  )}
+                </div>
+              ))}
             </div>
-          </>
-        )}
+          ) : (
+            <p className="text-sm text-muted-foreground italic">
+              No interviews yet. Click &quot;Add&quot; to schedule one.
+            </p>
+          )}
+        </div>
+
+        <CreateInterviewDialog
+          open={createDialogOpen}
+          onOpenChange={setCreateDialogOpen}
+          onSubmit={handleCreateInterview}
+        />
+
+        <EditInterviewDialog
+          interview={selectedInterview}
+          open={editDialogOpen}
+          onOpenChange={setEditDialogOpen}
+          onSubmit={handleUpdateInterview}
+        />
+
+        <DeleteInterviewDialog
+          interview={selectedInterview}
+          open={deleteDialogOpen}
+          onOpenChange={setDeleteDialogOpen}
+          onConfirm={handleDeleteInterview}
+        />
 
         {(onEdit || onDelete) && (
           <>

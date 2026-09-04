@@ -146,3 +146,76 @@ export async function deleteApplication(id: string): Promise<void> {
   });
   if (!res.ok) throw new Error("Failed to delete application");
 }
+
+// ── Interview API ──────────────────────────────────────────────────────────────
+
+export type CreateInterviewInput = {
+  type: "PHONE_SCREEN" | "TECHNICAL" | "BEHAVIORAL" | "FINAL_ROUND" | "PANEL" | "OTHER";
+  date: string;
+  time?: string;
+  interviewer?: string;
+  status: "SCHEDULED" | "COMPLETED" | "CANCELLED";
+  outcome?: "PASSED" | "FAILED" | "PENDING" | "NO_RESPONSE";
+  notes?: string;
+};
+
+export type UpdateInterviewInput = CreateInterviewInput;
+
+function mapInterviewToBackend(input: CreateInterviewInput): Record<string, unknown> {
+  return {
+    type: input.type,
+    date: input.date,
+    time: input.time || null,
+    interviewer: input.interviewer || null,
+    status: input.status,
+    outcome: input.outcome || null,
+    notes: input.notes || null,
+  };
+}
+
+function mapInterviewFromBackend(data: Record<string, unknown>): JobApplication["interviews"][number] {
+  return {
+    id: String(data.id),
+    type: (data.type as JobApplication["interviews"][number]["type"]) || "OTHER",
+    date: data.date as string,
+    time: (data.time as string) || undefined,
+    interviewer: (data.interviewer as string) || undefined,
+    status: (data.status as JobApplication["interviews"][number]["status"]) || "SCHEDULED",
+    outcome: (data.outcome as JobApplication["interviews"][number]["outcome"]) || undefined,
+    notes: (data.notes as string) || undefined,
+  };
+}
+
+export async function createInterview(
+  appId: string,
+  input: CreateInterviewInput,
+): Promise<JobApplication["interviews"][number]> {
+  const res = await apiFetch(`/api/job-applications/${appId}/interviews`, {
+    method: "POST",
+    body: JSON.stringify(mapInterviewToBackend(input)),
+  });
+  if (!res.ok) throw new Error("Failed to create interview");
+  const data = await res.json();
+  return mapInterviewFromBackend(data as Record<string, unknown>);
+}
+
+export async function updateInterview(
+  appId: string,
+  interviewId: string,
+  input: UpdateInterviewInput,
+): Promise<JobApplication["interviews"][number]> {
+  const res = await apiFetch(`/api/job-applications/${appId}/interviews/${interviewId}`, {
+    method: "PUT",
+    body: JSON.stringify(mapInterviewToBackend(input)),
+  });
+  if (!res.ok) throw new Error("Failed to update interview");
+  const data = await res.json();
+  return mapInterviewFromBackend(data as Record<string, unknown>);
+}
+
+export async function deleteInterview(appId: string, interviewId: string): Promise<void> {
+  const res = await apiFetch(`/api/job-applications/${appId}/interviews/${interviewId}`, {
+    method: "DELETE",
+  });
+  if (!res.ok) throw new Error("Failed to delete interview");
+}
