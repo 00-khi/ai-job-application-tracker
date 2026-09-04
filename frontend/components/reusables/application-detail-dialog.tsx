@@ -10,13 +10,17 @@ import {
   User,
   Tag,
   FileText,
+  Pencil,
+  Trash2,
 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -39,7 +43,6 @@ function formatSalary(min: number, max: number, currency: string): string {
         maximumFractionDigits: 0,
       }).format(n);
     } catch {
-      // Invalid currency code → fall back to a plain number
       return new Intl.NumberFormat("en-US", {
         maximumFractionDigits: 0,
       }).format(n);
@@ -58,40 +61,36 @@ function formatDate(dateString: string): string {
   });
 }
 
+function formatEnum(value: string): string {
+  const specialCases: Record<string, string> = {
+    ON_SITE: "On-site",
+  };
+  if (specialCases[value]) return specialCases[value];
+
+  return value
+    .replace(/_/g, " ")
+    .toLowerCase()
+    .replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
 function formatWorkMode(mode: string): string {
-  return mode === "on-site"
-    ? "On-site"
-    : mode.charAt(0).toUpperCase() + mode.slice(1);
+  return formatEnum(mode);
 }
 
 function formatJobType(type: string): string {
-  return type.charAt(0).toUpperCase() + type.slice(1).replace("-", " ");
+  return formatEnum(type);
 }
 
 function formatInterviewType(type: string): string {
-  const map: Record<string, string> = {
-    "phone-screen": "Phone Screen",
-    technical: "Technical",
-    behavioral: "Behavioral",
-    "final-round": "Final Round",
-    panel: "Panel",
-    other: "Other",
-  };
-  return map[type] ?? type;
+  return formatEnum(type);
 }
 
 function formatInterviewStatus(status: string): string {
-  return status.charAt(0).toUpperCase() + status.slice(1);
+  return formatEnum(status);
 }
 
 function formatOutcome(outcome: string): string {
-  const map: Record<string, string> = {
-    passed: "Passed",
-    failed: "Failed",
-    pending: "Pending",
-    "no-response": "No Response",
-  };
-  return map[outcome] ?? outcome;
+  return formatEnum(outcome);
 }
 
 function DetailRow({
@@ -118,10 +117,14 @@ function ApplicationDetailDialog({
   application,
   open,
   onOpenChange,
+  onEdit,
+  onDelete,
 }: {
   application: JobApplication | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onEdit?: (app: JobApplication) => void;
+  onDelete?: (app: JobApplication) => void;
 }) {
   if (!application) return null;
 
@@ -260,9 +263,9 @@ function ApplicationDetailDialog({
                         <Badge
                           variant="outline"
                           className={`text-xs ${
-                            interview.outcome === "passed"
+                            interview.outcome === "PASSED"
                               ? "border-green-300 text-green-600 dark:border-green-600 dark:text-green-400"
-                              : interview.outcome === "failed"
+                              : interview.outcome === "FAILED"
                                 ? "border-red-300 text-red-600 dark:border-red-600 dark:text-red-400"
                                 : ""
                           }`}
@@ -280,6 +283,38 @@ function ApplicationDetailDialog({
                 ))}
               </div>
             </div>
+          </>
+        )}
+
+        {(onEdit || onDelete) && (
+          <>
+            <Separator />
+            <DialogFooter>
+              {onEdit && (
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    onOpenChange(false);
+                    onEdit(application);
+                  }}
+                >
+                  <Pencil className="size-4" />
+                  Edit
+                </Button>
+              )}
+              {onDelete && (
+                <Button
+                  variant="destructive"
+                  onClick={() => {
+                    onOpenChange(false);
+                    onDelete(application);
+                  }}
+                >
+                  <Trash2 className="size-4" />
+                  Delete
+                </Button>
+              )}
+            </DialogFooter>
           </>
         )}
       </DialogContent>

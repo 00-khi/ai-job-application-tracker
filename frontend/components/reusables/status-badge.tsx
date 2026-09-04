@@ -6,47 +6,47 @@ const statusConfig: Record<
   ApplicationStatus,
   { label: string; className: string }
 > = {
-  saved: {
+  SAVED: {
     label: "Saved",
     className: "border-gray-300 text-gray-600 dark:border-gray-600 dark:text-gray-400",
   },
-  applied: {
+  APPLIED: {
     label: "Applied",
     className: "border-blue-300 text-blue-600 dark:border-blue-600 dark:text-blue-400",
   },
-  "phone-screen": {
+  PHONE_SCREEN: {
     label: "Phone Screen",
     className: "border-blue-300 text-blue-600 dark:border-blue-600 dark:text-blue-400",
   },
-  interviewing: {
+  INTERVIEWING: {
     label: "Interviewing",
     className: "border-blue-300 text-blue-600 dark:border-blue-600 dark:text-blue-400",
   },
-  assessment: {
+  ASSESSMENT: {
     label: "Assessment",
     className: "border-amber-300 text-amber-600 dark:border-amber-600 dark:text-amber-400",
   },
-  "final-round": {
+  FINAL_ROUND: {
     label: "Final Round",
     className: "border-violet-300 text-violet-600 dark:border-violet-600 dark:text-violet-400",
   },
-  offer: {
+  OFFER: {
     label: "Offer",
     className: "border-green-300 text-green-600 dark:border-green-600 dark:text-green-400",
   },
-  accepted: {
+  ACCEPTED: {
     label: "Accepted",
     className: "border-green-300 text-green-600 dark:border-green-600 dark:text-green-400",
   },
-  rejected: {
+  REJECTED: {
     label: "Rejected",
     className: "border-red-300 text-red-600 dark:border-red-600 dark:text-red-400",
   },
-  withdrawn: {
+  WITHDRAWN: {
     label: "Withdrawn",
     className: "border-gray-300 text-gray-600 dark:border-gray-600 dark:text-gray-400",
   },
-  declined: {
+  DECLINED: {
     label: "Declined",
     className: "border-gray-300 text-gray-600 dark:border-gray-600 dark:text-gray-400",
   },
