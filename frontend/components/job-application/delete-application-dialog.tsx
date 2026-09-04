@@ -10,6 +10,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { toast } from "sonner";
 
 export function DeleteApplicationDialog({
   application,
@@ -26,8 +27,13 @@ export function DeleteApplicationDialog({
 
   async function handleDelete() {
     if (!application) return;
-    await onDelete(application.id);
-    onOpenChange(false);
+    try {
+      await onDelete(application.id);
+      toast.success("Application deleted");
+      onOpenChange(false);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to delete application");
+    }
   }
 
   return (

@@ -8,6 +8,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { JobApplicationForm } from "./job-application-form";
+import { toast } from "sonner";
 import type { JobApplication } from "@/data/mock-data";
 
 export function EditApplicationDialog({
@@ -25,8 +26,13 @@ export function EditApplicationDialog({
 
   async function handleSubmit(data: Omit<JobApplication, "id" | "interviews" | "createdAt" | "updatedAt">) {
     if (!application) return;
-    await onUpdate(application.id, data);
-    onOpenChange(false);
+    try {
+      await onUpdate(application.id, data);
+      toast.success("Application updated");
+      onOpenChange(false);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to update application");
+    }
   }
 
   return (

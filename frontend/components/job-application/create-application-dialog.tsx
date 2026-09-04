@@ -8,6 +8,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { JobApplicationForm } from "./job-application-form";
+import { toast } from "sonner";
 import type { JobApplication } from "@/data/mock-data";
 
 export function CreateApplicationDialog({
@@ -20,8 +21,13 @@ export function CreateApplicationDialog({
   onCreate: (data: Omit<JobApplication, "id" | "interviews" | "createdAt" | "updatedAt">) => Promise<JobApplication>;
 }) {
   async function handleSubmit(data: Omit<JobApplication, "id" | "interviews" | "createdAt" | "updatedAt">) {
-    await onCreate(data);
-    onOpenChange(false);
+    try {
+      await onCreate(data);
+      toast.success("Application created");
+      onOpenChange(false);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to create application");
+    }
   }
 
   return (
