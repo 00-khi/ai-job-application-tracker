@@ -132,6 +132,8 @@ All components live in `components/ui/` (shadcn) or `components/reusables/` (app
 
 ### shadcn/ui Components
 
+ALWAYS USE SHADCN COMPONENTS. 
+
 | Component | Key Variants/Sizes |
 |---|---|
 | **Button** | Variants: default, outline, secondary, ghost, destructive, link. Sizes: xs, default, sm, lg, icon, icon-xs, icon-sm, icon-lg |
