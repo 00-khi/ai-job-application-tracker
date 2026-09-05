@@ -20,6 +20,7 @@ import {
 import { Loader2Icon } from "lucide-react";
 import type { JobApplication } from "@/data/mock-data";
 import { statusConfig } from "@/components/reusables/status-badge";
+import { workModeLabels, jobTypeLabels, applicationStatusLabels } from "@/lib/enum-labels";
 
 type FormData = {
   company: string;
@@ -38,19 +39,6 @@ type FormData = {
   jobUrl: string;
   notes: string;
   tags: string;
-};
-
-const workModeLabels: Record<string, string> = {
-  REMOTE: "Remote",
-  HYBRID: "Hybrid",
-  ON_SITE: "On-site",
-};
-
-const jobTypeLabels: Record<string, string> = {
-  FULL_TIME: "Full-time",
-  PART_TIME: "Part-time",
-  CONTRACT: "Contract",
-  INTERNSHIP: "Internship",
 };
 
 const defaultValues: FormData = {
@@ -193,13 +181,15 @@ export function JobApplicationForm({
             >
               <SelectTrigger className="w-full">
                 <SelectValue>
-                  {workModeLabels[form.workMode] || "Select work mode"}
+                  {(form.workMode ? workModeLabels[form.workMode as keyof typeof workModeLabels] : null) || "Select work mode"}
                 </SelectValue>
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="REMOTE">Remote</SelectItem>
-                <SelectItem value="HYBRID">Hybrid</SelectItem>
-                <SelectItem value="ON_SITE">On-site</SelectItem>
+                {Object.entries(workModeLabels).map(([value, label]) => (
+                  <SelectItem key={value} value={value}>
+                    {label}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </Field>
@@ -214,14 +204,15 @@ export function JobApplicationForm({
             >
               <SelectTrigger className="w-full">
                 <SelectValue>
-                  {jobTypeLabels[form.jobType] || "Select job type"}
+                  {(form.jobType ? jobTypeLabels[form.jobType as keyof typeof jobTypeLabels] : null) || "Select job type"}
                 </SelectValue>
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="FULL_TIME">Full-time</SelectItem>
-                <SelectItem value="PART_TIME">Part-time</SelectItem>
-                <SelectItem value="CONTRACT">Contract</SelectItem>
-                <SelectItem value="INTERNSHIP">Internship</SelectItem>
+                {Object.entries(jobTypeLabels).map(([value, label]) => (
+                  <SelectItem key={value} value={value}>
+                    {label}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </Field>
@@ -237,17 +228,11 @@ export function JobApplicationForm({
                 </SelectValue>
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="SAVED">Saved</SelectItem>
-                <SelectItem value="APPLIED">Applied</SelectItem>
-                <SelectItem value="PHONE_SCREEN">Phone Screen</SelectItem>
-                <SelectItem value="INTERVIEWING">Interviewing</SelectItem>
-                <SelectItem value="ASSESSMENT">Assessment</SelectItem>
-                <SelectItem value="FINAL_ROUND">Final Round</SelectItem>
-                <SelectItem value="OFFER">Offer</SelectItem>
-                <SelectItem value="REJECTED">Rejected</SelectItem>
-                <SelectItem value="WITHDRAWN">Withdrawn</SelectItem>
-                <SelectItem value="DECLINED">Declined</SelectItem>
-                <SelectItem value="ACCEPTED">Accepted</SelectItem>
+                {Object.entries(applicationStatusLabels).map(([value, label]) => (
+                  <SelectItem key={value} value={value}>
+                    {label}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </Field>

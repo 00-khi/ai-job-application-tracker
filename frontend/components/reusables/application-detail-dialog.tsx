@@ -38,6 +38,14 @@ import {
   type CreateInterviewInput,
   type JobApplication,
 } from "@/lib/job-applications";
+import {
+  formatEnum,
+  workModeLabels,
+  jobTypeLabels,
+  interviewTypeLabels,
+  interviewStatusLabels,
+  interviewOutcomeLabels,
+} from "@/lib/enum-labels";
 
 function formatSalary(min: number, max: number, currency: string): string {
   const safeCurrency = currency?.trim().toUpperCase();
@@ -70,38 +78,6 @@ function formatDate(dateString: string): string {
     day: "numeric",
     year: "numeric",
   });
-}
-
-function formatEnum(value: string): string {
-  const specialCases: Record<string, string> = {
-    ON_SITE: "On-site",
-  };
-  if (specialCases[value]) return specialCases[value];
-
-  return value
-    .replace(/_/g, " ")
-    .toLowerCase()
-    .replace(/\b\w/g, (c) => c.toUpperCase());
-}
-
-function formatWorkMode(mode: string): string {
-  return formatEnum(mode);
-}
-
-function formatJobType(type: string): string {
-  return formatEnum(type);
-}
-
-function formatInterviewType(type: string): string {
-  return formatEnum(type);
-}
-
-function formatInterviewStatus(status: string): string {
-  return formatEnum(status);
-}
-
-function formatOutcome(outcome: string): string {
-  return formatEnum(outcome);
 }
 
 function DetailRow({
@@ -191,12 +167,12 @@ function ApplicationDetailDialog({
           <DetailRow
             icon={MapPin}
             label="Location"
-            value={`${application.location} · ${formatWorkMode(application.workMode)}`}
+            value={`${application.location} · ${workModeLabels[application.workMode]}`}
           />
           <DetailRow
             icon={Briefcase}
             label="Job Type"
-            value={formatJobType(application.jobType)}
+            value={jobTypeLabels[application.jobType]}
           />
           <DetailRow
             icon={DollarSign}
@@ -288,7 +264,7 @@ function ApplicationDetailDialog({
                 >
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-medium">
-                      {formatInterviewType(interview.type)}
+                      {interviewTypeLabels[interview.type]}
                     </span>
                     <div className="flex items-center gap-2">
                       <span className="text-xs text-muted-foreground">
@@ -330,7 +306,7 @@ function ApplicationDetailDialog({
                   )}
                   <div className="mt-2 flex items-center gap-2">
                     <Badge variant="outline" className="text-xs">
-                      {formatInterviewStatus(interview.status)}
+                      {interviewStatusLabels[interview.status]}
                     </Badge>
                     {interview.outcome && (
                       <Badge
@@ -343,7 +319,7 @@ function ApplicationDetailDialog({
                               : ""
                         }`}
                       >
-                        {formatOutcome(interview.outcome)}
+                        {interviewOutcomeLabels[interview.outcome]}
                       </Badge>
                     )}
                   </div>

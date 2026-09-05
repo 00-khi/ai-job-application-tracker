@@ -13,6 +13,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import type { CreateInterviewInput } from "@/lib/job-applications";
+import {
+  interviewTypeLabels,
+  interviewStatusLabels,
+  interviewOutcomeLabels,
+} from "@/lib/enum-labels";
 
 type InterviewType = CreateInterviewInput["type"];
 type InterviewStatus = CreateInterviewInput["status"];
@@ -24,28 +29,6 @@ interface InterviewFormProps {
   onCancel: () => void;
   submitLabel?: string;
 }
-
-const interviewTypeLabels: Record<string, string> = {
-  PHONE_SCREEN: "Phone Screen",
-  TECHNICAL: "Technical",
-  BEHAVIORAL: "Behavioral",
-  FINAL_ROUND: "Final Round",
-  PANEL: "Panel",
-  OTHER: "Other",
-};
-
-const interviewStatusLabels: Record<string, string> = {
-  SCHEDULED: "Scheduled",
-  COMPLETED: "Completed",
-  CANCELLED: "Cancelled",
-};
-
-const interviewOutcomeLabels: Record<string, string> = {
-  PASSED: "Passed",
-  FAILED: "Failed",
-  PENDING: "Pending",
-  NO_RESPONSE: "No Response",
-};
 
 export function InterviewForm({
   initialData,

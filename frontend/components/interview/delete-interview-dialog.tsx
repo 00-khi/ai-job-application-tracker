@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 import type { JobApplication } from "@/lib/job-applications";
+import { interviewTypeLabels } from "@/lib/enum-labels";
 
 interface DeleteInterviewDialogProps {
   interview: JobApplication["interviews"][number] | null;
@@ -44,7 +45,7 @@ export function DeleteInterviewDialog({
         <AlertDialogHeader>
           <AlertDialogTitle>Delete Interview</AlertDialogTitle>
           <AlertDialogDescription>
-            Are you sure you want to delete this {interview.type.toLowerCase().replace(/_/g, " ")} interview?
+            Are you sure you want to delete this {interviewTypeLabels[interview.type]} interview?
             This action cannot be undone.
           </AlertDialogDescription>
         </AlertDialogHeader>

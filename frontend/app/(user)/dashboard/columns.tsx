@@ -12,6 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import type { Column } from "@/components/reusables/data-table";
+import { interviewTypeLabels } from "@/lib/enum-labels";
 
 function formatDate(dateString: string): string {
   if (!dateString) return "Not applied";
@@ -21,18 +22,6 @@ function formatDate(dateString: string): string {
     day: "2-digit",
     year: "numeric",
   });
-}
-
-function formatEnum(value: string): string {
-  const specialCases: Record<string, string> = {
-    ON_SITE: "On-site",
-  };
-  if (specialCases[value]) return specialCases[value];
-
-  return value
-    .replace(/_/g, " ")
-    .toLowerCase()
-    .replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
 function getLatestInterviewStatus(interviews: JobApplication["interviews"]): {
@@ -50,7 +39,7 @@ function getLatestInterviewStatus(interviews: JobApplication["interviews"]): {
   const nextScheduled = sorted.find((i) => i.status === "SCHEDULED");
   if (nextScheduled) {
     return {
-      label: formatEnum(nextScheduled.type),
+      label: interviewTypeLabels[nextScheduled.type],
       className: "border-blue-300 text-blue-600 dark:border-blue-600 dark:text-blue-400",
     };
   }
@@ -59,24 +48,24 @@ function getLatestInterviewStatus(interviews: JobApplication["interviews"]): {
   if (latest.status === "COMPLETED") {
     if (latest.outcome === "PASSED") {
       return {
-        label: formatEnum(latest.type),
+        label: interviewTypeLabels[latest.type],
         className: "border-green-300 text-green-600 dark:border-green-600 dark:text-green-400",
       };
     }
     if (latest.outcome === "FAILED") {
       return {
-        label: formatEnum(latest.type),
+        label: interviewTypeLabels[latest.type],
         className: "border-red-300 text-red-600 dark:border-red-600 dark:text-red-400",
       };
     }
     return {
-      label: formatEnum(latest.type),
+      label: interviewTypeLabels[latest.type],
       className: "border-amber-300 text-amber-600 dark:border-amber-600 dark:text-amber-400",
     };
   }
 
   return {
-    label: formatEnum(latest.type),
+    label: interviewTypeLabels[latest.type],
     className: "border-gray-300 text-gray-600 dark:border-gray-600 dark:text-gray-400",
   };
 }
