@@ -7,6 +7,8 @@ import com.khiancarasicas.sunset.model.entity.JobApplication;
 import com.khiancarasicas.sunset.repository.InterviewRepository;
 import com.khiancarasicas.sunset.repository.JobApplicationRepository;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,7 +39,7 @@ public class InterviewService {
                 .orElseThrow(() -> new IllegalStateException("Interview not found"));
 
         if (!interview.getJobApplication().getId().equals(jobAppId)) {
-            throw new SecurityException("Interview does not belong to this application");
+            throw new AccessDeniedException("Interview does not belong to this application");
         }
 
         applyRequest(interview, request);
@@ -54,7 +56,7 @@ public class InterviewService {
                 .orElseThrow(() -> new IllegalStateException("Interview not found"));
 
         if (!interview.getJobApplication().getId().equals(jobAppId)) {
-            throw new SecurityException("Interview does not belong to this application");
+            throw new AccessDeniedException("Interview does not belong to this application");
         }
 
         interviewRepository.delete(interview);
@@ -64,7 +66,7 @@ public class InterviewService {
         JobApplication application = jobApplicationRepository.findById(id)
                 .orElseThrow(() -> new IllegalStateException("Job application not found"));
         if (!application.getUserId().equals(userId)) {
-            throw new SecurityException("Access denied");
+            throw new AccessDeniedException("Access denied");
         }
         return application;
     }

@@ -18,6 +18,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -138,7 +139,7 @@ public class JobApplicationService {
         JobApplication application = jobApplicationRepository.findById(id)
                 .orElseThrow(() -> new IllegalStateException("Job application not found"));
         if (!application.getUserId().equals(userId)) {
-            throw new SecurityException("Access denied");
+            throw new AccessDeniedException("Access denied");
         }
         return application;
     }
