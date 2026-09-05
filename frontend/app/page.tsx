@@ -38,7 +38,8 @@ const features = [
   },
   {
     title: "AI when you need it",
-    description: "Get AI suggestions for your applications. ",
+    description:
+      "A better resume leads to a better match. A better match leads to a stronger application. A stronger application opens the door to a conversation. AI helps you through every step.",
     icon: SparklesIcon,
   },
 ] as const;
