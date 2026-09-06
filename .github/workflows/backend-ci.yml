@@ -31,7 +31,7 @@ jobs:
           cache-dependency-path: backend/pom.xml
 
       - name: Build and test
-        run: ./mvnw clean install -B
+        run: ./mvnw clean install -B -P test
 
       - name: Upload JAR artifact
         if: success()
