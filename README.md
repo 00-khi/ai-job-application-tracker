@@ -33,20 +33,7 @@ Stop losing track of where you applied. One place to track every application, in
 
 ## Architecture
 
-```
-┌──────────────┐        ┌─────────────────┐        ┌──────────────┐
-│   Frontend   │──JWT──▶│     Backend     │──Hibernate──▶│ PostgreSQL  │
-│  (Next.js)   │        │  (Spring Boot)  │        │  (Supabase)  │
-│   :3000      │        │    :8080        │        │              │
-└──────┬───────┘        └─────────────────┘        └──────────────┘
-       │
-       │ SDK
-       ▼
-  ┌────────────┐
-  │  Supabase  │
-  │    Auth    │
-  └────────────┘
-```
+![](/docs/assets/achitecture.png)
 
 The frontend authenticates users directly with Supabase Auth, obtains JWTs, and forwards them to the backend. The backend validates JWTs via Spring Security's OAuth2 Resource Server (JWKS) and connects to Supabase Database (PostgreSQL) via Hibernate.
 
