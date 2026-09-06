@@ -14,7 +14,15 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { ChevronsUpDownIcon, SettingsIcon, LogOutIcon, SunIcon, MoonIcon, ShieldCheckIcon, ScaleIcon } from "lucide-react";
+import {
+  ChevronsUpDownIcon,
+  SettingsIcon,
+  LogOutIcon,
+  SunIcon,
+  MoonIcon,
+  ShieldCheckIcon,
+  ScaleIcon,
+} from "lucide-react";
 import { useTheme } from "next-themes";
 import Link from "next/link";
 import { useAuth } from "@/contexts/auth-context";
@@ -50,11 +58,13 @@ export function NavUser() {
             sideOffset={4}
           >
             <DropdownMenuGroup>
-              <DropdownMenuItem>
+              {/* <DropdownMenuItem>
                 <SettingsIcon />
                 Settings
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
+              </DropdownMenuItem> */}
+              <DropdownMenuItem
+                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              >
                 {theme === "dark" ? <SunIcon /> : <MoonIcon />}
                 {theme === "dark" ? "Light mode" : "Dark mode"}
               </DropdownMenuItem>
