@@ -30,31 +30,31 @@ const navMain = [
     icon: <LayoutDashboardIcon />,
     isActive: true,
   },
-  {
-    title: "Resume",
-    url: "/resume",
-    icon: <FileTextIcon />,
-  },
-  {
-    title: "Bullet Generator",
-    url: "/bullets",
-    icon: <ListIcon />,
-  },
-  {
-    title: "Cover Letter",
-    url: "/cover-letter",
-    icon: <MailIcon />,
-  },
-  {
-    title: "Job Fit",
-    url: "/job-fit",
-    icon: <BarChart3Icon />,
-  },
-  {
-    title: "Networking",
-    url: "/networking",
-    icon: <UsersIcon />,
-  },
+  // {
+  //   title: "Resume",
+  //   url: "/resume",
+  //   icon: <FileTextIcon />,
+  // },
+  // {
+  //   title: "Bullet Generator",
+  //   url: "/bullets",
+  //   icon: <ListIcon />,
+  // },
+  // {
+  //   title: "Cover Letter",
+  //   url: "/cover-letter",
+  //   icon: <MailIcon />,
+  // },
+  // {
+  //   title: "Job Fit",
+  //   url: "/job-fit",
+  //   icon: <BarChart3Icon />,
+  // },
+  // {
+  //   title: "Networking",
+  //   url: "/networking",
+  //   icon: <UsersIcon />,
+  // },
 ];
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -82,9 +82,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarContent>
         <NavMain items={navMain} />
       </SidebarContent>
-      <SidebarFooter>
-        {user && <NavUser />}
-      </SidebarFooter>
+      <SidebarFooter>{user && <NavUser />}</SidebarFooter>
     </Sidebar>
   );
 }
