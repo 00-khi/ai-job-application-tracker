@@ -20,7 +20,7 @@ import {
 import { Loader2Icon } from "lucide-react";
 import type { JobApplication } from "@/data/mock-data";
 import { statusConfig } from "@/components/reusables/status-badge";
-import { workModeLabels, jobTypeLabels, applicationStatusLabels } from "@/lib/enum-labels";
+import { workModeLabels, jobTypeLabels, applicationStatusLabels, currencies } from "@/lib/enum-labels";
 
 type FormData = {
   company: string;
@@ -49,7 +49,7 @@ const defaultValues: FormData = {
   jobType: "",
   salaryMin: "",
   salaryMax: "",
-  currency: "USD",
+  currency: "PHP",
   status: "SAVED",
   dateApplied: "",
   source: "",
@@ -90,7 +90,7 @@ function formDataToInput(data: FormData): Omit<JobApplication, "id" | "interview
     jobType: (data.jobType as JobApplication["jobType"]) || "FULL_TIME",
     salaryMin: data.salaryMin ? Number(data.salaryMin) : undefined,
     salaryMax: data.salaryMax ? Number(data.salaryMax) : undefined,
-    currency: data.currency || "USD",
+    currency: data.currency || "PHP",
     status: data.status,
     dateApplied: data.dateApplied || "",
     source: data.source || "",
@@ -260,14 +260,26 @@ export function JobApplicationForm({
             />
           </Field>
           <Field>
-            <FieldLabel htmlFor="currency">Currency</FieldLabel>
-            <Input
-              id="currency"
-              placeholder="USD"
-              maxLength={3}
+            <FieldLabel>Currency</FieldLabel>
+            <Select
               value={form.currency}
-              onChange={(e) => updateField("currency", e.target.value.toUpperCase())}
-            />
+              onValueChange={(val) => updateField("currency", val as string)}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue>
+                  {form.currency
+                    ? currencies.find((c) => c.code === form.currency)?.label || form.currency
+                    : "Select currency"}
+                </SelectValue>
+              </SelectTrigger>
+              <SelectContent>
+                {currencies.map((c) => (
+                  <SelectItem key={c.code} value={c.code}>
+                    {c.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </Field>
         </div>
 
