@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { PageHeader } from "@/components/reusables/page-header"
 import { StatCard } from "@/components/reusables/stat-card"
 import { DataTable } from "@/components/reusables/data-table"
@@ -38,7 +38,8 @@ export default function DashboardPage() {
     remove,
   } = usePaginatedApplications()
 
-  const [selectedApplication, setSelectedApplication] = useState<JobApplication | null>(null)
+  const [selectedApplicationId, setSelectedApplicationId] = useState<string | null>(null)
+  const selectedApplication = data.content.find(app => app.id === selectedApplicationId) ?? null
   const [detailOpen, setDetailOpen] = useState(false)
   const [createOpen, setCreateOpen] = useState(false)
   const [editApplication, setEditApplication] = useState<JobApplication | null>(null)
@@ -47,7 +48,7 @@ export default function DashboardPage() {
   const [deleteOpen, setDeleteOpen] = useState(false)
 
   function handleRowClick(application: JobApplication) {
-    setSelectedApplication(application)
+    setSelectedApplicationId(application.id)
     setDetailOpen(true)
   }
 
@@ -60,15 +61,6 @@ export default function DashboardPage() {
     setDeleteApplication(application)
     setDeleteOpen(true)
   }
-
-  useEffect(() => {
-    if (selectedApplication && data.content.length > 0) {
-      const fresh = data.content.find(app => app.id === selectedApplication.id)
-      if (fresh && fresh !== selectedApplication) {
-        setSelectedApplication(fresh)
-      }
-    }
-  }, [data.content, selectedApplication?.id])
 
   if (loading && data.content.length === 0) {
     return <DashboardSkeleton />
