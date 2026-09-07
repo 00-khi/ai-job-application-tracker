@@ -13,6 +13,7 @@ COPY pom.xml .
 
 # Pre-download all dependencies. This layer is cached as long as pom.xml
 # doesn't change, so we avoid re-downloading on every code change.
+RUN chmod +x ./mvnw
 RUN ./mvnw dependency:go-offline -B
 
 # Copy source code and run the full build with the "test" profile.
