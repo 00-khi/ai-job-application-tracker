@@ -16,13 +16,6 @@ COPY pom.xml .
 RUN chmod +x ./mvnw
 RUN ./mvnw dependency:go-offline -B
 
-ENV SUNSET_DB_URL=${SUNSET_DB_URL}
-ENV SUNSET_DB_USERNAME=${SUNSET_DB_USERNAME}
-ENV SUNSET_DB_PASSWORD=${SUNSET_DB_PASSWORD}
-ENV SUNSET_SUPABASE_JWT_ISSUER=${SUNSET_SUPABASE_JWT_ISSUER}
-ENV JWT_SECRET=${JWT_SECRET}
-ENV FRONTEND_URL=${FRONTEND_URL}
-
 # Copy source code and run the full build with the "test" profile.
 # The test profile activates H2 for tests so no external DB is needed.
 COPY src ./src
