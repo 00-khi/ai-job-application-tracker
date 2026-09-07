@@ -46,4 +46,3 @@ Requirements:
 - Always follow the design system in @DESIGN.md.
 - Update the design system using @DESIGN-PROMPT.md when requested.
 - DO NOT RUN "npm". USE "pnpm" INSTEAD.
- 
