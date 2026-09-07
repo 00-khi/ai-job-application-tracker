@@ -19,6 +19,7 @@ export const applicationStatusLabels: Record<ApplicationStatus, string> = {
   WITHDRAWN: "Withdrawn",
   DECLINED: "Declined",
   ACCEPTED: "Accepted",
+  CLOSED: "Closed",
 };
 
 export const applicationStatusConfig: Record<
@@ -77,6 +78,11 @@ export const applicationStatusConfig: Record<
   },
   DECLINED: {
     label: "Declined",
+    className:
+      "border-gray-300 text-gray-600 dark:border-gray-600 dark:text-gray-400",
+  },
+  CLOSED: {
+    label: "Closed",
     className:
       "border-gray-300 text-gray-600 dark:border-gray-600 dark:text-gray-400",
   },

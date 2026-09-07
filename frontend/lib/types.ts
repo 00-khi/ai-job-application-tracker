@@ -11,7 +11,8 @@ export type ApplicationStatus =
   | "REJECTED"
   | "WITHDRAWN"
   | "DECLINED"
-  | "ACCEPTED";
+  | "ACCEPTED"
+  | "CLOSED";
 
 export type JobType = "FULL_TIME" | "PART_TIME" | "CONTRACT" | "INTERNSHIP";
 

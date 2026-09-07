@@ -11,5 +11,6 @@ public enum ApplicationStatus {
     REJECTED,
     WITHDRAWN,
     DECLINED,
-    ACCEPTED
+    ACCEPTED,
+    CLOSED
 }
