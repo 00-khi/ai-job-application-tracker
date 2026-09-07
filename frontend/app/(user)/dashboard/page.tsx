@@ -1,20 +1,20 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { PageHeader } from "@/components/reusables/page-header"
-import { StatCard } from "@/components/reusables/stat-card"
-import { DataTable } from "@/components/reusables/data-table"
-import { ApplicationDetailDialog } from "@/components/reusables/application-detail-dialog"
-import { CreateApplicationDialog } from "@/components/job-application/create-application-dialog"
-import { EditApplicationDialog } from "@/components/job-application/edit-application-dialog"
-import { DeleteApplicationDialog } from "@/components/job-application/delete-application-dialog"
-import { BackendTimeoutCard } from "@/components/reusables/backend-timeout-card"
-import { usePaginatedApplications } from "@/hooks/usePaginatedApplications"
-import type { JobApplication } from "@/lib/types"
-import { columns } from "./columns"
-import { Briefcase, Calendar, Trophy, XCircle, Plus } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { DashboardSkeleton } from "@/components/reusables/dashboard-skeleton"
+import { useState } from "react";
+import { PageHeader } from "@/components/reusables/page-header";
+import { StatCard } from "@/components/reusables/stat-card";
+import { DataTable } from "@/components/reusables/data-table";
+import { ApplicationDetailDialog } from "@/components/reusables/application-detail-dialog";
+import { CreateApplicationDialog } from "@/components/job-application/create-application-dialog";
+import { EditApplicationDialog } from "@/components/job-application/edit-application-dialog";
+import { DeleteApplicationDialog } from "@/components/job-application/delete-application-dialog";
+import { BackendTimeoutCard } from "@/components/reusables/backend-timeout-card";
+import { usePaginatedApplications } from "@/hooks/usePaginatedApplications";
+import type { JobApplication } from "@/lib/types";
+import { columns } from "./columns";
+import { Briefcase, Calendar, Trophy, XCircle, Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { DashboardSkeleton } from "@/components/reusables/dashboard-skeleton";
 
 export default function DashboardPage() {
   const {
@@ -39,56 +39,66 @@ export default function DashboardPage() {
     create,
     update,
     remove,
-  } = usePaginatedApplications()
+  } = usePaginatedApplications();
 
-  const [selectedApplicationId, setSelectedApplicationId] = useState<string | null>(null)
-  const selectedApplication = data.content.find(app => app.id === selectedApplicationId) ?? null
-  const [detailOpen, setDetailOpen] = useState(false)
-  const [createOpen, setCreateOpen] = useState(false)
-  const [editApplication, setEditApplication] = useState<JobApplication | null>(null)
-  const [editOpen, setEditOpen] = useState(false)
-  const [deleteApplication, setDeleteApplication] = useState<JobApplication | null>(null)
-  const [deleteOpen, setDeleteOpen] = useState(false)
+  const [selectedApplicationId, setSelectedApplicationId] = useState<
+    string | null
+  >(null);
+  const selectedApplication =
+    data.content.find((app) => app.id === selectedApplicationId) ?? null;
+  const [detailOpen, setDetailOpen] = useState(false);
+  const [createOpen, setCreateOpen] = useState(false);
+  const [editApplication, setEditApplication] = useState<JobApplication | null>(
+    null,
+  );
+  const [editOpen, setEditOpen] = useState(false);
+  const [deleteApplication, setDeleteApplication] =
+    useState<JobApplication | null>(null);
+  const [deleteOpen, setDeleteOpen] = useState(false);
 
   function handleRowClick(application: JobApplication) {
-    setSelectedApplicationId(application.id)
-    setDetailOpen(true)
+    setSelectedApplicationId(application.id);
+    setDetailOpen(true);
   }
 
   function handleEdit(application: JobApplication) {
-    setEditApplication(application)
-    setEditOpen(true)
+    setEditApplication(application);
+    setEditOpen(true);
   }
 
   function handleDelete(application: JobApplication) {
-    setDeleteApplication(application)
-    setDeleteOpen(true)
+    setDeleteApplication(application);
+    setDeleteOpen(true);
   }
 
   if (loading && data.content.length === 0) {
-    return <DashboardSkeleton />
+    return <DashboardSkeleton />;
   }
 
   if (isTimeout) {
     return (
       <div className="space-y-6">
-        <PageHeader title="Dashboard" description="Track and manage your job applications" />
-        <div className="flex items-center justify-center py-12">
-          <BackendTimeoutCard onRetry={retry} />
-        </div>
+        <PageHeader
+          title="Dashboard"
+          description="Track and manage your job applications"
+        />
+        <BackendTimeoutCard onRetry={retry} />
       </div>
-    )
+    );
   }
 
   if (error) {
     return (
       <div className="space-y-6">
-        <PageHeader title="Dashboard" description="Track and manage your job applications" />
+        <PageHeader
+          title="Dashboard"
+          description="Track and manage your job applications"
+        />
         <div className="flex items-center justify-center py-12">
           <p className="text-sm text-destructive">{error}</p>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -182,5 +192,5 @@ export default function DashboardPage() {
         onDelete={remove}
       />
     </div>
-  )
+  );
 }
