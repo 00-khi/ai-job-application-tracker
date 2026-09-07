@@ -3,9 +3,9 @@ spring:
     name: sunset
 
   datasource:
-    url: ${SUNSET_DB_URL:jdbc:postgresql://localhost:5432/sunset_db}
-    username: ${SUNSET_DB_USERNAME:postgres}
-    password: ${SUNSET_DB_PASSWORD:}
+    url: ${SUNSET_DB_URL}
+    username: ${SUNSET_DB_USERNAME}
+    password: ${SUNSET_DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -21,10 +21,10 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: ${SUNSET_SUPABASE_JWT_ISSUER:https://fake.supabase.co}
+          issuer-uri: ${SUNSET_SUPABASE_JWT_ISSUER}
 
 jwt:
-  secret: ${JWT_SECRET:ci-testing-secret}
+  secret: ${JWT_SECRET}
 
 server:
   port: 8080

@@ -17,6 +17,13 @@ defaults:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+    environment: production
+    env:
+      SUNSET_DB_URL: ${{ secrets.SUNSET_DB_URL }}
+      SUNSET_DB_USERNAME: ${{ secrets.SUNSET_DB_USERNAME }}
+      SUNSET_DB_PASSWORD: ${{ secrets.SUNSET_DB_PASSWORD }}
+      SUNSET_SUPABASE_JWT_ISSUER: ${{ secrets.SUNSET_SUPABASE_JWT_ISSUER }}
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
 
     steps:
       - name: Checkout code
