@@ -121,4 +121,3 @@ Requirements:
 - NEVER run commands.
 - The user must execute all commands manually.
 - Only provide the commands and explain what the user needs to run.
- 
