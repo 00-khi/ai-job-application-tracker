@@ -26,7 +26,7 @@ ENV FRONTEND_URL=${FRONTEND_URL}
 # Copy source code and run the full build with the "test" profile.
 # The test profile activates H2 for tests so no external DB is needed.
 COPY src ./src
-RUN ./mvnw clean package -Ptest -B
+RUN ./mvnw clean package
 
 # ---------------------------------------------------------------------------
 # Stage 2: Runtime
