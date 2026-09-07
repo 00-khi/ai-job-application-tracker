@@ -9,11 +9,13 @@ import {
   type JobApplication,
   type CreateApplicationInput,
 } from "@/lib/job-applications";
+import { isTimeoutError } from "@/lib/api-errors";
 
 export function useJobApplications() {
   const [applications, setApplications] = useState<JobApplication[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isTimeout, setIsTimeout] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -21,13 +23,19 @@ export function useJobApplications() {
       try {
         setLoading(true);
         setError(null);
+        setIsTimeout(false);
         const data = await fetchApplications();
         if (!cancelled) {
           setApplications(data);
         }
       } catch (err) {
         if (!cancelled) {
-          setError(err instanceof Error ? err.message : "Failed to load applications");
+          if (isTimeoutError(err)) {
+            setIsTimeout(true);
+            setError(null);
+          } else {
+            setError(err instanceof Error ? err.message : "Failed to load applications");
+          }
         }
       } finally {
         if (!cancelled) {
@@ -43,14 +51,24 @@ export function useJobApplications() {
     try {
       setLoading(true);
       setError(null);
+      setIsTimeout(false);
       const data = await fetchApplications();
       setApplications(data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to load applications");
+      if (isTimeoutError(err)) {
+        setIsTimeout(true);
+        setError(null);
+      } else {
+        setError(err instanceof Error ? err.message : "Failed to load applications");
+      }
     } finally {
       setLoading(false);
     }
   }, []);
+
+  const retry = useCallback(() => {
+    refetch();
+  }, [refetch]);
 
   const create = useCallback(
     async (input: CreateApplicationInput) => {
@@ -84,7 +102,9 @@ export function useJobApplications() {
     applications,
     loading,
     error,
+    isTimeout,
     refetch,
+    retry,
     create,
     update,
     remove,

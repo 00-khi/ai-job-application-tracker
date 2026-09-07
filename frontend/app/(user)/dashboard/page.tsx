@@ -8,6 +8,7 @@ import { ApplicationDetailDialog } from "@/components/reusables/application-deta
 import { CreateApplicationDialog } from "@/components/job-application/create-application-dialog"
 import { EditApplicationDialog } from "@/components/job-application/edit-application-dialog"
 import { DeleteApplicationDialog } from "@/components/job-application/delete-application-dialog"
+import { BackendTimeoutCard } from "@/components/reusables/backend-timeout-card"
 import { usePaginatedApplications } from "@/hooks/usePaginatedApplications"
 import type { JobApplication } from "@/lib/types"
 import { columns } from "./columns"
@@ -21,6 +22,7 @@ export default function DashboardPage() {
     stats,
     loading,
     error,
+    isTimeout,
     search,
     status,
     page,
@@ -33,6 +35,7 @@ export default function DashboardPage() {
     handlePageSizeChange,
     handleSort,
     refetch,
+    retry,
     create,
     update,
     remove,
@@ -64,6 +67,17 @@ export default function DashboardPage() {
 
   if (loading && data.content.length === 0) {
     return <DashboardSkeleton />
+  }
+
+  if (isTimeout) {
+    return (
+      <div className="space-y-6">
+        <PageHeader title="Dashboard" description="Track and manage your job applications" />
+        <div className="flex items-center justify-center py-12">
+          <BackendTimeoutCard onRetry={retry} />
+        </div>
+      </div>
+    )
   }
 
   if (error) {
