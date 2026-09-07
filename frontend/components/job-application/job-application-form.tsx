@@ -18,7 +18,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Loader2Icon } from "lucide-react";
-import type { JobApplication } from "@/data/mock-data";
+import type { JobApplication } from "@/lib/types";
 import { statusConfig } from "@/components/reusables/status-badge";
 import { workModeLabels, jobTypeLabels, applicationStatusLabels, currencies } from "@/lib/enum-labels";
 

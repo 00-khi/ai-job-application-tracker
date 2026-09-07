@@ -37,7 +37,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { ApplicationStatus } from "@/data/mock-data";
+import type { ApplicationStatus } from "@/lib/types";
 import { statusConfig } from "@/components/reusables/status-badge";
 
 interface ServerPagination {

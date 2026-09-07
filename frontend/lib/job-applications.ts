@@ -1,5 +1,5 @@
 import { apiFetch } from "@/lib/api";
-import type { JobApplication } from "@/data/mock-data";
+import type { JobApplication } from "@/lib/types";
 import type { PaginatedResponse, SearchParams, ApplicationStats } from "@/lib/types";
 
 export type { JobApplication };

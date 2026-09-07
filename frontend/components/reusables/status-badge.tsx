@@ -1,7 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { applicationStatusConfig } from "@/lib/enum-labels";
-import type { ApplicationStatus } from "@/data/mock-data";
+import type { ApplicationStatus } from "@/lib/types";
 
 const statusConfig = applicationStatusConfig;
 

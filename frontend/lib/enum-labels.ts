@@ -3,7 +3,7 @@ import type {
   WorkMode,
   JobType,
   Interview,
-} from "@/data/mock-data";
+} from "@/lib/types";
 
 // ── Label Maps ────────────────────────────────────────────────────────────────
 

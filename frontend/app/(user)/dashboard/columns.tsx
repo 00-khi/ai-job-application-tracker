@@ -1,6 +1,6 @@
 "use client";
 
-import type { JobApplication } from "@/data/mock-data";
+import type { JobApplication } from "@/lib/types";
 import { StatusBadge } from "@/components/reusables/status-badge";
 import { Badge } from "@/components/ui/badge";
 import {

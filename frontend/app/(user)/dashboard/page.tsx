@@ -9,7 +9,7 @@ import { CreateApplicationDialog } from "@/components/job-application/create-app
 import { EditApplicationDialog } from "@/components/job-application/edit-application-dialog"
 import { DeleteApplicationDialog } from "@/components/job-application/delete-application-dialog"
 import { usePaginatedApplications } from "@/hooks/usePaginatedApplications"
-import type { JobApplication } from "@/data/mock-data"
+import type { JobApplication } from "@/lib/types"
 import { columns } from "./columns"
 import { Briefcase, Calendar, Trophy, XCircle, Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"

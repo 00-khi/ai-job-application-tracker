@@ -271,15 +271,12 @@ frontend/
 │   ├── signup-form.tsx         # Signup form
 │   └── theme-provider.tsx      # next-themes wrapper
 ├── hooks/
-│   ├── use-mobile.ts           # Mobile breakpoint detection
-│   └── useApplicationStats.ts  # Dashboard stats
+│   └── use-mobile.ts           # Mobile breakpoint detection
 ├── lib/
 │   └── utils.ts                # cn() utility
 ├── styles/
 │   ├── globals.css             # All design tokens + theme
 │   └── fonts.ts                # Font definitions
-├── data/
-│   └── mock-data.ts            # Development mock data
 ├── public/
 │   └── favicon.ico
 └── components.json             # shadcn/ui configuration

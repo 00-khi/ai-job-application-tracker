@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import { JobApplicationForm } from "./job-application-form";
 import { toast } from "sonner";
-import type { JobApplication } from "@/data/mock-data";
+import type { JobApplication } from "@/lib/types";
 
 export function CreateApplicationDialog({
   open,
