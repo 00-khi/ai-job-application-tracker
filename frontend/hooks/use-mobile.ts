@@ -13,5 +13,5 @@ export function useIsMobile() {
     return () => mql.removeEventListener("change", callback)
   }
 
-  return React.useSyncExternalStore(subscribe, getSnapshot)
+  return React.useSyncExternalStore(subscribe, getSnapshot, () => false)
 }
