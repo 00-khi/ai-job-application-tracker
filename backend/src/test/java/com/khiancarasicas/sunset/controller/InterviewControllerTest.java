@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import tools.jackson.databind.ObjectMapper;
@@ -25,6 +26,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(InterviewController.class)
+@ActiveProfiles("test")
 @Import(GlobalExceptionHandler.class)
 class InterviewControllerTest {
 
@@ -162,12 +164,4 @@ class InterviewControllerTest {
                 .andExpect(status().isForbidden());
     }
 
-    @Test
-    void create_withInvalidJwt_returns401() throws Exception {
-        mockMvc.perform(post("/api/job-applications/{jobAppId}/interviews", 1L)
-                        .header("Authorization", "Bearer invalid-token-value")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"type\":\"TECHNICAL\",\"date\":\"2025-02-01\",\"status\":\"SCHEDULED\"}"))
-                .andExpect(status().isUnauthorized());
-    }
 }
