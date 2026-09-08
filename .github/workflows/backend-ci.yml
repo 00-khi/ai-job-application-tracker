@@ -18,12 +18,6 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
     environment: production
-    env:
-      SUNSET_DB_URL: ${{ secrets.SUNSET_DB_URL }}
-      SUNSET_DB_USERNAME: ${{ secrets.SUNSET_DB_USERNAME }}
-      SUNSET_DB_PASSWORD: ${{ secrets.SUNSET_DB_PASSWORD }}
-      SUNSET_SUPABASE_JWT_ISSUER: ${{ secrets.SUNSET_SUPABASE_JWT_ISSUER }}
-      JWT_SECRET: ${{ secrets.JWT_SECRET }}
 
     steps:
       - name: Checkout code
@@ -41,7 +35,7 @@ jobs:
         run: chmod +x ./mvnw
 
       - name: Build and test
-        run: ./mvnw clean install -B -P test
+        run: ./mvnw clean install
 
       - name: Upload JAR artifact
         if: success()
