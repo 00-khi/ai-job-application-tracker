@@ -12,7 +12,7 @@ import { ErrorCard } from "@/components/reusables/error-card";
 import { usePaginatedApplications } from "@/hooks/usePaginatedApplications";
 import type { JobApplication } from "@/lib/types";
 import { columns } from "./columns";
-import { Briefcase, Calendar, Trophy, XCircle, Plus } from "lucide-react";
+import { Briefcase, Calendar, Trophy, XCircle, Plus, Bookmark } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DashboardSkeleton } from "@/components/reusables/dashboard-skeleton";
 
@@ -99,12 +99,18 @@ export default function DashboardPage() {
         }
       />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
         <StatCard
           label="Applications"
           value={String(stats?.total ?? 0)}
-          hint="Total tracked"
+          hint="All applications"
           icon={Briefcase}
+        />
+        <StatCard
+          label="Saved"
+          value={String(stats?.saved ?? 0)}
+          hint="Planning to apply"
+          icon={Bookmark}
         />
         <StatCard
           label="Interviews"

@@ -81,6 +81,7 @@ export interface SearchParams {
 
 export interface ApplicationStats {
   total: number;
+  saved: number;
   totalInterviews: number;
   offers: number;
   rejected: number;

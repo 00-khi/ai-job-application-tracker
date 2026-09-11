@@ -10,6 +10,7 @@ import java.util.Map;
 public class JobApplicationStatsResponse {
 
     private long total;
+    private long saved;
     private long totalInterviews;
     private long offers;
     private long rejected;

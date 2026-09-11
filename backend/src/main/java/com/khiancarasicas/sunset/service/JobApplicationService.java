@@ -69,6 +69,9 @@ public class JobApplicationService {
         List<JobApplication> applications = jobApplicationRepository.findByUserIdWithInterviews(userId);
 
         long total = applications.size();
+        long saved = applications.stream()
+                .filter(app -> app.getStatus() == com.khiancarasicas.sunset.model.enums.ApplicationStatus.SAVED)
+                .count();
         long totalInterviews = applications.stream()
                 .mapToLong(app -> app.getInterviews() != null ? app.getInterviews().size() : 0)
                 .sum();
@@ -87,6 +90,7 @@ public class JobApplicationService {
 
         return JobApplicationStatsResponse.builder()
                 .total(total)
+                .saved(saved)
                 .totalInterviews(totalInterviews)
                 .offers(offers)
                 .rejected(rejected)
