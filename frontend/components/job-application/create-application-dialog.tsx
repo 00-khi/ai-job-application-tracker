@@ -27,6 +27,7 @@ export function CreateApplicationDialog({
       onOpenChange(false);
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Failed to create application");
+      throw err;
     }
   }
 

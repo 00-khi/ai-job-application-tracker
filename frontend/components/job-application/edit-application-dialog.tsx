@@ -32,6 +32,7 @@ export function EditApplicationDialog({
       onOpenChange(false);
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Failed to update application");
+      throw err;
     }
   }
 
