@@ -11,7 +11,6 @@ import {
   type CreateApplicationInput,
 } from "@/lib/job-applications";
 import type { PaginatedResponse, SearchParams, ApplicationStats } from "@/lib/types";
-import { isTimeoutError } from "@/lib/api-errors";
 
 export function usePaginatedApplications() {
   const [data, setData] = useState<PaginatedResponse<JobApplication>>({
@@ -26,7 +25,6 @@ export function usePaginatedApplications() {
   const [stats, setStats] = useState<ApplicationStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [isTimeout, setIsTimeout] = useState(false);
 
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState<string | undefined>(undefined);
@@ -42,16 +40,10 @@ export function usePaginatedApplications() {
     try {
       setLoading(true);
       setError(null);
-      setIsTimeout(false);
       const result = await fetchApplicationsPaginated(params);
       setData(result);
     } catch (err) {
-      if (isTimeoutError(err)) {
-        setIsTimeout(true);
-        setError(null);
-      } else {
-        setError(err instanceof Error ? err.message : "Failed to load applications");
-      }
+      setError(err instanceof Error ? err.message : "Failed to load applications");
     } finally {
       setLoading(false);
     }
@@ -185,7 +177,6 @@ export function usePaginatedApplications() {
     stats,
     loading,
     error,
-    isTimeout,
     search,
     status,
     page,

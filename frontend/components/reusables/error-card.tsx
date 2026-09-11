@@ -1,18 +1,18 @@
 "use client";
 
 import { useState } from "react";
-import { Loader2, WifiOff, X } from "lucide-react";
+import { Loader2, AlertTriangle, X } from "lucide-react";
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-interface BackendTimeoutCardProps {
+interface ErrorCardProps {
   onRetry?: () => void;
   className?: string;
 }
 
-export function BackendTimeoutCard({ onRetry, className }: BackendTimeoutCardProps) {
+export function ErrorCard({ onRetry, className }: ErrorCardProps) {
   const [isVisible, setIsVisible] = useState(true);
   const [isRetrying, setIsRetrying] = useState(false);
 
@@ -30,7 +30,7 @@ export function BackendTimeoutCard({ onRetry, className }: BackendTimeoutCardPro
 
   return (
     <Card
-      data-slot="backend-timeout-card"
+      data-slot="error-card"
       className={cn(
         "p-0 animate-in fade-in-0 slide-in-from-top-1 duration-300 bg-muted/40 ring-foreground/5",
         className
@@ -38,12 +38,12 @@ export function BackendTimeoutCard({ onRetry, className }: BackendTimeoutCardPro
     >
       <CardContent className="flex items-start gap-3 p-5">
         <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-muted">
-          <WifiOff className="h-4 w-4 text-muted-foreground" />
+          <AlertTriangle className="h-4 w-4 text-muted-foreground" />
         </div>
         <div className="min-w-0 flex-1">
-          <p className="text-sm font-medium">Backend might be waking up</p>
+          <p className="text-sm font-medium">Failed to load data</p>
           <p className="mt-1 text-sm text-muted-foreground">
-            This may take a moment. Please wait and try again.
+            Something went wrong. Please try again.
           </p>
         </div>
         <div className="flex items-center gap-2">
