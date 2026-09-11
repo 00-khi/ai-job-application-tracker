@@ -35,7 +35,8 @@ public class JobApplicationSpecification {
                         cb.like(cb.lower(root.get("contactName")), pattern),
                         cb.like(cb.lower(root.get("contactEmail")), pattern),
                         cb.like(cb.lower(root.get("notes")), pattern),
-                        cb.like(cb.lower(root.get("tags")), pattern));
+                        cb.like(cb.lower(root.get("tags")), pattern),
+                        cb.like(cb.lower(root.get("workMode").as(String.class)), pattern));
                 predicates.add(searchPredicate);
             }
 
