@@ -88,3 +88,29 @@ export interface ApplicationStats {
   rejected: number;
   byStatus: Record<string, number>;
 }
+
+// ── AI Bullet Generation Types ───────────────────────────────────────────────
+
+export type Seniority = "JUNIOR" | "MID_LEVEL" | "SENIOR" | "PRINCIPAL";
+
+export type BulletTone =
+  | "IMPACT"
+  | "STAR"
+  | "TECHNICAL"
+  | "LEADERSHIP"
+  | "QUANTITATIVE"
+  | "COLLABORATIVE"
+  | "INNOVATION";
+
+export interface BulletGenerationRequest {
+  jobTitle: string;
+  seniority: Seniority;
+  skills: string[];
+  achievements: string;
+  existingBullets?: string;
+  tone: BulletTone;
+}
+
+export interface BulletGenerationResponse {
+  bullets: string[];
+}

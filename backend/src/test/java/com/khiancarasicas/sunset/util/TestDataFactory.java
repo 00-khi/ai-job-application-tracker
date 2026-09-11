@@ -1,5 +1,6 @@
 package com.khiancarasicas.sunset.util;
 
+import com.khiancarasicas.sunset.model.dto.BulletGenerationRequest;
 import com.khiancarasicas.sunset.model.dto.InterviewRequest;
 import com.khiancarasicas.sunset.model.dto.JobApplicationRequest;
 import com.khiancarasicas.sunset.model.entity.Interview;
@@ -98,5 +99,16 @@ public final class TestDataFactory {
         interview.setOutcome(InterviewOutcome.PENDING);
         interview.setNotes("Technical interview round");
         return interview;
+    }
+
+    public static BulletGenerationRequest createBulletGenerationRequest() {
+        return new BulletGenerationRequest(
+                "Software Engineer",
+                Seniority.SENIOR,
+                List.of("Java", "Spring Boot", "PostgreSQL"),
+                "Built a caching layer that reduced API latency by 40%, designed job queue processing 10K daily tasks",
+                null,
+                BulletTone.IMPACT
+        );
     }
 }

@@ -35,11 +35,11 @@ const navMain = [
   //   url: "/resume",
   //   icon: <FileTextIcon />,
   // },
-  // {
-  //   title: "Bullet Generator",
-  //   url: "/bullets",
-  //   icon: <ListIcon />,
-  // },
+  {
+    title: "Bullet Generator",
+    url: "/bullets",
+    icon: <ListIcon />,
+  },
   // {
   //   title: "Cover Letter",
   //   url: "/cover-letter",
