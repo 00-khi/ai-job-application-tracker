@@ -97,7 +97,7 @@ public class JobApplicationService {
     private Sort buildSort(String sortBy, String sortDirection) {
         List<String> allowedSortFields = Arrays.asList(
                 "company", "title", "status", "dateApplied",
-                "location", "createdAt", "updatedAt");
+                "location", "salaryMin", "createdAt", "updatedAt");
 
         String field = allowedSortFields.contains(sortBy) ? sortBy : "createdAt";
         Sort.Direction direction = "asc".equalsIgnoreCase(sortDirection)

@@ -7,6 +7,7 @@ import {
   DollarSign,
   Calendar,
   Link,
+  ExternalLink,
   Mail,
   User,
   Tag,
@@ -18,6 +19,7 @@ import {
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { formatSalary } from "@/lib/format";
 import {
   Dialog,
   DialogContent,
@@ -47,30 +49,6 @@ import {
   interviewOutcomeLabels,
 } from "@/lib/enum-labels";
 
-function formatSalary(min: number, max: number, currency: string): string {
-  const safeCurrency = currency?.trim().toUpperCase();
-
-  const fmt = (n: number) => {
-    try {
-      if (!Number.isFinite(n)) {
-        return "N/A";
-      }
-
-      return new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: safeCurrency,
-        maximumFractionDigits: 0,
-      }).format(n);
-    } catch {
-      return new Intl.NumberFormat("en-US", {
-        maximumFractionDigits: 0,
-      }).format(n);
-    }
-  };
-
-  return `${fmt(min)} – ${fmt(max)}`;
-}
-
 function formatDate(dateString: string): string {
   if (!dateString) return "—";
   return new Date(dateString).toLocaleDateString("en-US", {
@@ -84,17 +62,21 @@ function DetailRow({
   icon: Icon,
   label,
   value,
+  isEmpty,
 }: {
   icon: React.ElementType;
   label: string;
   value: string;
+  isEmpty?: boolean;
 }) {
   return (
     <div className="flex items-start gap-2">
       <Icon className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
       <div className="min-w-0">
         <p className="text-xs text-muted-foreground">{label}</p>
-        <p className="text-sm font-medium">{value}</p>
+        <p className={`text-sm font-medium ${isEmpty ? "text-muted-foreground italic" : ""}`}>
+          {value}
+        </p>
       </div>
     </div>
   );
@@ -143,22 +125,11 @@ function ApplicationDetailDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle className="text-base">{application.company}</DialogTitle>
+          <DialogTitle className="text-base">{application.company || "Not specified"}</DialogTitle>
           <DialogDescription className="flex items-center gap-2">
-            {application.title}
+            {application.title || "Not specified"}
             <StatusBadge status={application.status} />
           </DialogDescription>
-
-          {application.jobUrl && (
-            <a
-              href={application.jobUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-xs text-primary underline-offset-4 hover:underline w-fit"
-            >
-              View Job Posting
-            </a>
-          )}
         </DialogHeader>
 
         <Separator />
@@ -167,7 +138,17 @@ function ApplicationDetailDialog({
           <DetailRow
             icon={MapPin}
             label="Location"
-            value={`${application.location} · ${workModeLabels[application.workMode]}`}
+            value={
+              application.location || application.workMode
+                ? (() => {
+                    const hasLocation = !!application.location;
+                    const wm = workModeLabels[application.workMode];
+                    if (hasLocation && wm) return `${application.location} · ${wm}`;
+                    return hasLocation ? application.location : wm;
+                  })()
+                : "Not specified"
+            }
+            isEmpty={!application.location && !application.workMode}
           />
           <DetailRow
             icon={Briefcase}
@@ -178,30 +159,40 @@ function ApplicationDetailDialog({
             icon={DollarSign}
             label="Salary"
             value={
-              application.salaryMin != null && application.salaryMax != null
+              application.salaryMin != null || application.salaryMax != null
                 ? formatSalary(
-                    application.salaryMin,
-                    application.salaryMax,
+                    application.salaryMin ?? null,
+                    application.salaryMax ?? null,
                     application.currency,
                   )
                 : "Not specified"
             }
+            isEmpty={application.salaryMin == null && application.salaryMax == null}
           />
           <DetailRow
             icon={Calendar}
             label="Date Applied"
-            value={formatDate(application.dateApplied)}
+            value={application.dateApplied ? formatDate(application.dateApplied) : "Not applied"}
+            isEmpty={!application.dateApplied}
           />
-          <DetailRow icon={Link} label="Source" value={application.source} />
+          <DetailRow icon={Link} label="Source" value={application.source || "Not specified"} isEmpty={!application.source} />
           <DetailRow
             icon={User}
             label="Contact"
-            value={application.contactName ?? "—"}
+            value={application.contactName || "Not specified"}
+            isEmpty={!application.contactName}
           />
           <DetailRow
             icon={Mail}
             label="Email"
-            value={application.contactEmail ?? "—"}
+            value={application.contactEmail || "Not specified"}
+            isEmpty={!application.contactEmail}
+          />
+          <DetailRow
+            icon={ExternalLink}
+            label="Job URL"
+            value={application.jobUrl || "Not specified"}
+            isEmpty={!application.jobUrl}
           />
         </div>
 

@@ -12,7 +12,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import type { Column } from "@/components/reusables/data-table";
-import { interviewTypeLabels } from "@/lib/enum-labels";
+import { interviewTypeLabels, workModeLabels } from "@/lib/enum-labels";
+import { formatSalary } from "@/lib/format";
 
 function formatDate(dateString: string): string {
   if (!dateString) return "Not applied";
@@ -83,18 +84,24 @@ export function columns({
       header: "Company",
       accessorKey: "company",
       sortable: true,
-      cell: (row) => (
-        <span className="font-semibold">{row.company}</span>
-      ),
+      cell: (row) =>
+        row.company ? (
+          <span className="font-semibold">{row.company}</span>
+        ) : (
+          <span className="text-muted-foreground italic">Not specified</span>
+        ),
     },
     {
       id: "title",
       header: "Title",
       accessorKey: "title",
       sortable: true,
-      cell: (row) => (
-        <span className="text-muted-foreground">{row.title}</span>
-      ),
+      cell: (row) =>
+        row.title ? (
+          <span className="text-muted-foreground">{row.title}</span>
+        ) : (
+          <span className="text-muted-foreground italic">Not specified</span>
+        ),
     },
     {
       id: "status",
@@ -137,6 +144,28 @@ export function columns({
       header: "Location",
       accessorKey: "location",
       sortable: true,
+      cell: (row) => {
+        const hasLocation = !!row.location;
+        const hasWorkMode = !!row.workMode;
+        if (!hasLocation && !hasWorkMode) {
+          return <span className="text-muted-foreground italic">Not specified</span>;
+        }
+        const wm = workModeLabels[row.workMode];
+        if (hasLocation && wm) return `${row.location} · ${wm}`;
+        return hasLocation ? row.location : wm;
+      },
+    },
+    {
+      id: "salary",
+      header: "Salary",
+      sortable: true,
+      cell: (row) => {
+        const { salaryMin, salaryMax, currency } = row;
+        if (salaryMin == null && salaryMax == null) {
+          return <span className="text-muted-foreground italic">Not specified</span>;
+        }
+        return <span>{formatSalary(salaryMin ?? null, salaryMax ?? null, currency)}</span>;
+      },
     },
     {
       id: "actions",
