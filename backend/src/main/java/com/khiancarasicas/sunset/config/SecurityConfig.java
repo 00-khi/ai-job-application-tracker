@@ -39,6 +39,14 @@ public class SecurityConfig {
             // Health check endpoint
             .requestMatchers("/actuator/health").permitAll()
 
+            // Swagger UI and API docs
+            .requestMatchers(
+                "/swagger-ui/**",
+                "/swagger-ui.html",
+                "/api-docs/**",
+                "/v3/api-docs/**")
+            .permitAll()
+
             // All other requests require authentication
             .anyRequest().authenticated())
 
