@@ -24,12 +24,14 @@ export default function DashboardPage() {
     error,
     search,
     status,
+    workMode,
     page,
     pageSize,
     sortBy,
     sortDirection,
     handleSearch,
     handleStatusChange,
+    handleWorkModeChange,
     handlePageChange,
     handlePageSizeChange,
     handleSort,
@@ -140,6 +142,8 @@ export default function DashboardPage() {
         onSearchChange={handleSearch}
         statusFilter={status}
         onStatusFilterChange={handleStatusChange}
+        workModeFilter={workMode}
+        onWorkModeFilterChange={handleWorkModeChange}
         pagination={{
           page: data.page,
           pageSize: data.size,

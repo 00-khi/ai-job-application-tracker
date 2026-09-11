@@ -6,6 +6,7 @@ import com.khiancarasicas.sunset.model.dto.JobApplicationSearchRequest;
 import com.khiancarasicas.sunset.model.dto.JobApplicationStatsResponse;
 import com.khiancarasicas.sunset.model.dto.PaginatedResponse;
 import com.khiancarasicas.sunset.model.enums.ApplicationStatus;
+import com.khiancarasicas.sunset.model.enums.WorkMode;
 import com.khiancarasicas.sunset.service.JobApplicationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,7 @@ public class JobApplicationController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) String search,
             @RequestParam(required = false) ApplicationStatus status,
+            @RequestParam(required = false) WorkMode workMode,
             @RequestParam(defaultValue = "createdAt") String sortBy,
             @RequestParam(defaultValue = "desc") String sortDirection) {
         String userId = jwt.getSubject();
@@ -40,6 +42,7 @@ public class JobApplicationController {
         request.setSize(size);
         request.setSearch(search);
         request.setStatus(status);
+        request.setWorkMode(workMode);
         request.setSortBy(sortBy);
         request.setSortDirection(sortDirection);
 

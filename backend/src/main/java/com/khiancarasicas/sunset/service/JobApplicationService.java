@@ -46,7 +46,7 @@ public class JobApplicationService {
 
     public PaginatedResponse<JobApplicationResponse> search(String userId, JobApplicationSearchRequest request) {
         Specification<JobApplication> spec = JobApplicationSpecification.build(
-                userId, request.getSearch(), request.getStatus());
+                userId, request.getSearch(), request.getStatus(), request.getWorkMode());
 
         Sort sort = buildSort(request.getSortBy(), request.getSortDirection());
         Pageable pageable = PageRequest.of(request.getSafePage(), request.getSafeSize(), sort);

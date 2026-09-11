@@ -80,6 +80,7 @@ class JobApplicationControllerTest {
                                 .claim("sub", TestDataFactory.DEFAULT_USER_ID)))
                         .param("search", "acme")
                         .param("status", "APPLIED")
+                        .param("workMode", "REMOTE")
                         .param("page", "0")
                         .param("size", "5")
                         .param("sortBy", "company")

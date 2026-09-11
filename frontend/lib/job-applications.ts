@@ -84,6 +84,7 @@ export async function fetchApplicationsPaginated(
   if (params.size !== undefined) searchParams.set("size", String(params.size));
   if (params.search) searchParams.set("search", params.search);
   if (params.status) searchParams.set("status", params.status);
+  if (params.workMode) searchParams.set("workMode", params.workMode);
   if (params.sortBy) searchParams.set("sortBy", params.sortBy);
   if (params.sortDirection) searchParams.set("sortDirection", params.sortDirection);
 

@@ -28,6 +28,7 @@ export function usePaginatedApplications() {
 
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState<string | undefined>(undefined);
+  const [workMode, setWorkMode] = useState<string | undefined>(undefined);
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const [sortBy, setSortBy] = useState("createdAt");
@@ -66,6 +67,7 @@ export function usePaginatedApplications() {
       size: pageSize,
       search: debouncedSearch.current,
       status,
+      workMode,
       sortBy,
       sortDirection,
     };
@@ -78,7 +80,7 @@ export function usePaginatedApplications() {
     return () => {
       cancelled = true;
     };
-  }, [page, pageSize, status, sortBy, sortDirection, fetchData, fetchStats]);
+  }, [page, pageSize, status, workMode, sortBy, sortDirection, fetchData, fetchStats]);
 
   const handleSearch = useCallback(
     (value: string) => {
@@ -96,6 +98,7 @@ export function usePaginatedApplications() {
           size: pageSize,
           search: value,
           status,
+          workMode,
           sortBy,
           sortDirection,
         };
@@ -103,12 +106,20 @@ export function usePaginatedApplications() {
         fetchStats();
       }, 300);
     },
-    [pageSize, status, sortBy, sortDirection, fetchData, fetchStats],
+    [pageSize, status, workMode, sortBy, sortDirection, fetchData, fetchStats],
   );
 
   const handleStatusChange = useCallback(
     (value: string | undefined) => {
       setStatus(value === "all" ? undefined : value);
+      setPage(0);
+    },
+    [],
+  );
+
+  const handleWorkModeChange = useCallback(
+    (value: string | undefined) => {
+      setWorkMode(value === "all" ? undefined : value);
       setPage(0);
     },
     [],
@@ -135,12 +146,13 @@ export function usePaginatedApplications() {
       size: pageSize,
       search: debouncedSearch.current,
       status,
+      workMode,
       sortBy,
       sortDirection,
     };
     fetchData(params);
     fetchStats();
-  }, [page, pageSize, status, sortBy, sortDirection, fetchData, fetchStats]);
+  }, [page, pageSize, status, workMode, sortBy, sortDirection, fetchData, fetchStats]);
 
   const retry = useCallback(() => {
     refetch();
@@ -179,12 +191,14 @@ export function usePaginatedApplications() {
     error,
     search,
     status,
+    workMode,
     page,
     pageSize,
     sortBy,
     sortDirection,
     handleSearch,
     handleStatusChange,
+    handleWorkModeChange,
     handlePageChange,
     handlePageSizeChange,
     handleSort,

@@ -2,6 +2,7 @@ package com.khiancarasicas.sunset.repository;
 
 import com.khiancarasicas.sunset.model.entity.JobApplication;
 import com.khiancarasicas.sunset.model.enums.ApplicationStatus;
+import com.khiancarasicas.sunset.model.enums.WorkMode;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -14,7 +15,7 @@ public class JobApplicationSpecification {
     }
 
     public static Specification<JobApplication> build(
-            String userId, String search, ApplicationStatus status) {
+            String userId, String search, ApplicationStatus status, WorkMode workMode) {
 
         return (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
@@ -23,6 +24,10 @@ public class JobApplicationSpecification {
 
             if (status != null) {
                 predicates.add(cb.equal(root.get("status"), status));
+            }
+
+            if (workMode != null) {
+                predicates.add(cb.equal(root.get("workMode"), workMode));
             }
 
             if (search != null && !search.isBlank()) {
@@ -35,8 +40,7 @@ public class JobApplicationSpecification {
                         cb.like(cb.lower(root.get("contactName")), pattern),
                         cb.like(cb.lower(root.get("contactEmail")), pattern),
                         cb.like(cb.lower(root.get("notes")), pattern),
-                        cb.like(cb.lower(root.get("tags")), pattern),
-                        cb.like(cb.lower(root.get("workMode").as(String.class)), pattern));
+                        cb.like(cb.lower(root.get("tags")), pattern));
                 predicates.add(searchPredicate);
             }
 

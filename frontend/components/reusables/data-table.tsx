@@ -37,8 +37,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { ApplicationStatus } from "@/lib/types";
+import type { ApplicationStatus, WorkMode } from "@/lib/types";
 import { statusConfig } from "@/components/reusables/status-badge";
+import { workModeConfig } from "@/lib/enum-labels";
 
 interface ServerPagination {
   page: number;
@@ -73,6 +74,8 @@ interface DataTableProps<T> {
   onSearchChange?: (value: string) => void;
   statusFilter?: string;
   onStatusFilterChange?: (value: string | undefined) => void;
+  workModeFilter?: string;
+  onWorkModeFilterChange?: (value: string | undefined) => void;
   pagination?: ServerPagination;
   onPageChange?: (page: number) => void;
   onPageSizeChange?: (size: number) => void;
@@ -88,6 +91,8 @@ function DataTable<T>({
   onSearchChange,
   statusFilter,
   onStatusFilterChange,
+  workModeFilter,
+  onWorkModeFilterChange,
   pagination,
   onPageChange,
   onPageSizeChange,
@@ -150,6 +155,37 @@ function DataTable<T>({
               {(
                 Object.entries(statusConfig) as [
                   ApplicationStatus,
+                  { label: string; className: string },
+                ][]
+              ).map(([value, { label }]) => (
+                <SelectItem key={value} value={value}>
+                  {label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          <Select
+            value={workModeFilter ?? "all"}
+            onValueChange={(value) => onWorkModeFilterChange?.(value!)}
+          >
+            <SelectTrigger className="w-[140px]" size="sm">
+              <SelectValue>
+                {(() => {
+                  if (!workModeFilter || workModeFilter === "all") return "All Work Modes";
+                  return (
+                    workModeConfig[workModeFilter as WorkMode]?.label ?? workModeFilter
+                  );
+                })()}
+              </SelectValue>
+            </SelectTrigger>
+
+            <SelectContent>
+              <SelectItem value="all">All Work Modes</SelectItem>
+
+              {(
+                Object.entries(workModeConfig) as [
+                  WorkMode,
                   { label: string; className: string },
                 ][]
               ).map(([value, { label }]) => (

@@ -32,6 +32,7 @@ class JobApplicationSpecificationTest {
         app1.setCompany("Acme Corp");
         app1.setTitle("Software Engineer");
         app1.setStatus(ApplicationStatus.APPLIED);
+        app1.setWorkMode(WorkMode.HYBRID);
         app1.setSource("LinkedIn");
         app1.setContactEmail("jane@acme.com");
         app1.setNotes("Great opportunity");
@@ -42,6 +43,7 @@ class JobApplicationSpecificationTest {
         app2.setCompany("Tech Startup");
         app2.setTitle("Backend Developer");
         app2.setStatus(ApplicationStatus.OFFER);
+        app2.setWorkMode(WorkMode.REMOTE);
         app2.setSource("Indeed");
         app2.setContactEmail("hr@techstartup.com");
         app2.setNotes("Remote position");
@@ -52,6 +54,7 @@ class JobApplicationSpecificationTest {
         app3.setCompany("Acme Corp");
         app3.setTitle("Frontend Developer");
         app3.setStatus(ApplicationStatus.APPLIED);
+        app3.setWorkMode(WorkMode.ON_SITE);
         entityManager.persist(app3);
 
         entityManager.flush();
@@ -61,7 +64,7 @@ class JobApplicationSpecificationTest {
     @Test
     void build_filtersByUserId() {
         Specification<JobApplication> spec = JobApplicationSpecification.build(
-                TestDataFactory.DEFAULT_USER_ID, null, null);
+                TestDataFactory.DEFAULT_USER_ID, null, null, null);
 
         Page<JobApplication> results = jobApplicationRepository.findAll(
                 spec, PageRequest.of(0, 10));
@@ -72,7 +75,7 @@ class JobApplicationSpecificationTest {
     @Test
     void build_filtersByStatus() {
         Specification<JobApplication> spec = JobApplicationSpecification.build(
-                TestDataFactory.DEFAULT_USER_ID, null, ApplicationStatus.OFFER);
+                TestDataFactory.DEFAULT_USER_ID, null, ApplicationStatus.OFFER, null);
 
         Page<JobApplication> results = jobApplicationRepository.findAll(
                 spec, PageRequest.of(0, 10));
@@ -82,9 +85,33 @@ class JobApplicationSpecificationTest {
     }
 
     @Test
+    void build_filtersByWorkMode() {
+        Specification<JobApplication> spec = JobApplicationSpecification.build(
+                TestDataFactory.DEFAULT_USER_ID, null, null, WorkMode.REMOTE);
+
+        Page<JobApplication> results = jobApplicationRepository.findAll(
+                spec, PageRequest.of(0, 10));
+
+        assertEquals(1, results.getTotalElements());
+        assertEquals("Tech Startup", results.getContent().get(0).getCompany());
+    }
+
+    @Test
+    void build_filtersByWorkModeHybrid() {
+        Specification<JobApplication> spec = JobApplicationSpecification.build(
+                TestDataFactory.DEFAULT_USER_ID, null, null, WorkMode.HYBRID);
+
+        Page<JobApplication> results = jobApplicationRepository.findAll(
+                spec, PageRequest.of(0, 10));
+
+        assertEquals(1, results.getTotalElements());
+        assertEquals("Acme Corp", results.getContent().get(0).getCompany());
+    }
+
+    @Test
     void build_searchByCompany() {
         Specification<JobApplication> spec = JobApplicationSpecification.build(
-                TestDataFactory.DEFAULT_USER_ID, "acme", null);
+                TestDataFactory.DEFAULT_USER_ID, "acme", null, null);
 
         Page<JobApplication> results = jobApplicationRepository.findAll(
                 spec, PageRequest.of(0, 10));
@@ -96,7 +123,7 @@ class JobApplicationSpecificationTest {
     @Test
     void build_searchByCompany_caseInsensitive() {
         Specification<JobApplication> spec = JobApplicationSpecification.build(
-                TestDataFactory.DEFAULT_USER_ID, "ACME", null);
+                TestDataFactory.DEFAULT_USER_ID, "ACME", null, null);
 
         Page<JobApplication> results = jobApplicationRepository.findAll(
                 spec, PageRequest.of(0, 10));
@@ -107,7 +134,7 @@ class JobApplicationSpecificationTest {
     @Test
     void build_searchByTitle() {
         Specification<JobApplication> spec = JobApplicationSpecification.build(
-                TestDataFactory.DEFAULT_USER_ID, "backend", null);
+                TestDataFactory.DEFAULT_USER_ID, "backend", null, null);
 
         Page<JobApplication> results = jobApplicationRepository.findAll(
                 spec, PageRequest.of(0, 10));
@@ -119,7 +146,7 @@ class JobApplicationSpecificationTest {
     @Test
     void build_searchBySource() {
         Specification<JobApplication> spec = JobApplicationSpecification.build(
-                TestDataFactory.DEFAULT_USER_ID, "linkedin", null);
+                TestDataFactory.DEFAULT_USER_ID, "linkedin", null, null);
 
         Page<JobApplication> results = jobApplicationRepository.findAll(
                 spec, PageRequest.of(0, 10));
@@ -130,7 +157,7 @@ class JobApplicationSpecificationTest {
     @Test
     void build_searchByContactEmail() {
         Specification<JobApplication> spec = JobApplicationSpecification.build(
-                TestDataFactory.DEFAULT_USER_ID, "jane@", null);
+                TestDataFactory.DEFAULT_USER_ID, "jane@", null, null);
 
         Page<JobApplication> results = jobApplicationRepository.findAll(
                 spec, PageRequest.of(0, 10));
@@ -141,7 +168,7 @@ class JobApplicationSpecificationTest {
     @Test
     void build_searchByNotes() {
         Specification<JobApplication> spec = JobApplicationSpecification.build(
-                TestDataFactory.DEFAULT_USER_ID, "remote", null);
+                TestDataFactory.DEFAULT_USER_ID, "remote", null, null);
 
         Page<JobApplication> results = jobApplicationRepository.findAll(
                 spec, PageRequest.of(0, 10));
@@ -153,7 +180,7 @@ class JobApplicationSpecificationTest {
     @Test
     void build_searchByTags() {
         Specification<JobApplication> spec = JobApplicationSpecification.build(
-                TestDataFactory.DEFAULT_USER_ID, "django", null);
+                TestDataFactory.DEFAULT_USER_ID, "django", null, null);
 
         Page<JobApplication> results = jobApplicationRepository.findAll(
                 spec, PageRequest.of(0, 10));
@@ -164,7 +191,30 @@ class JobApplicationSpecificationTest {
     @Test
     void build_combinedSearchAndStatus() {
         Specification<JobApplication> spec = JobApplicationSpecification.build(
-                TestDataFactory.DEFAULT_USER_ID, "acme", ApplicationStatus.APPLIED);
+                TestDataFactory.DEFAULT_USER_ID, "acme", ApplicationStatus.APPLIED, null);
+
+        Page<JobApplication> results = jobApplicationRepository.findAll(
+                spec, PageRequest.of(0, 10));
+
+        assertEquals(1, results.getTotalElements());
+        assertEquals("Acme Corp", results.getContent().get(0).getCompany());
+    }
+
+    @Test
+    void build_combinedSearchStatusAndWorkMode() {
+        Specification<JobApplication> spec = JobApplicationSpecification.build(
+                TestDataFactory.DEFAULT_USER_ID, "acme", ApplicationStatus.APPLIED, WorkMode.REMOTE);
+
+        Page<JobApplication> results = jobApplicationRepository.findAll(
+                spec, PageRequest.of(0, 10));
+
+        assertEquals(0, results.getTotalElements());
+    }
+
+    @Test
+    void build_combinedStatusAndWorkMode() {
+        Specification<JobApplication> spec = JobApplicationSpecification.build(
+                TestDataFactory.DEFAULT_USER_ID, null, ApplicationStatus.APPLIED, WorkMode.HYBRID);
 
         Page<JobApplication> results = jobApplicationRepository.findAll(
                 spec, PageRequest.of(0, 10));
@@ -176,7 +226,7 @@ class JobApplicationSpecificationTest {
     @Test
     void build_searchWithNoMatch_returnsEmpty() {
         Specification<JobApplication> spec = JobApplicationSpecification.build(
-                TestDataFactory.DEFAULT_USER_ID, "nonexistent", null);
+                TestDataFactory.DEFAULT_USER_ID, "nonexistent", null, null);
 
         Page<JobApplication> results = jobApplicationRepository.findAll(
                 spec, PageRequest.of(0, 10));
@@ -187,7 +237,7 @@ class JobApplicationSpecificationTest {
     @Test
     void build_userIsolation_doesNotReturnOtherUsersApps() {
         Specification<JobApplication> spec = JobApplicationSpecification.build(
-                TestDataFactory.DEFAULT_USER_ID, "acme", null);
+                TestDataFactory.DEFAULT_USER_ID, "acme", null, null);
 
         Page<JobApplication> results = jobApplicationRepository.findAll(
                 spec, PageRequest.of(0, 10));
@@ -199,7 +249,7 @@ class JobApplicationSpecificationTest {
     @Test
     void build_nullSearchAndNullStatus_returnsAllUserApps() {
         Specification<JobApplication> spec = JobApplicationSpecification.build(
-                TestDataFactory.DEFAULT_USER_ID, null, null);
+                TestDataFactory.DEFAULT_USER_ID, null, null, null);
 
         Page<JobApplication> results = jobApplicationRepository.findAll(
                 spec, PageRequest.of(0, 10));
@@ -210,7 +260,7 @@ class JobApplicationSpecificationTest {
     @Test
     void build_blankSearchIgnored() {
         Specification<JobApplication> spec = JobApplicationSpecification.build(
-                TestDataFactory.DEFAULT_USER_ID, "   ", null);
+                TestDataFactory.DEFAULT_USER_ID, "   ", null, null);
 
         Page<JobApplication> results = jobApplicationRepository.findAll(
                 spec, PageRequest.of(0, 10));

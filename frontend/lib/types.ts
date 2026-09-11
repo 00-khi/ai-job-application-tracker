@@ -75,6 +75,7 @@ export interface SearchParams {
   size?: number;
   search?: string;
   status?: string;
+  workMode?: string;
   sortBy?: string;
   sortDirection?: "asc" | "desc";
 }

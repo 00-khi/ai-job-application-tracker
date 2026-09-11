@@ -94,6 +94,27 @@ export const workModeLabels: Record<WorkMode, string> = {
   ON_SITE: "On-site",
 };
 
+export const workModeConfig: Record<
+  WorkMode,
+  { label: string; className: string }
+> = {
+  REMOTE: {
+    label: "Remote",
+    className:
+      "border-blue-300 text-blue-600 dark:border-blue-600 dark:text-blue-400",
+  },
+  HYBRID: {
+    label: "Hybrid",
+    className:
+      "border-amber-300 text-amber-600 dark:border-amber-600 dark:text-amber-400",
+  },
+  ON_SITE: {
+    label: "On-site",
+    className:
+      "border-green-300 text-green-600 dark:border-green-600 dark:text-green-400",
+  },
+};
+
 export const jobTypeLabels: Record<JobType, string> = {
   FULL_TIME: "Full-time",
   PART_TIME: "Part-time",

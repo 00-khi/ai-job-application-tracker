@@ -1,6 +1,7 @@
 package com.khiancarasicas.sunset.model.dto;
 
 import com.khiancarasicas.sunset.model.enums.ApplicationStatus;
+import com.khiancarasicas.sunset.model.enums.WorkMode;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,6 +13,7 @@ public class JobApplicationSearchRequest {
     private int size = 10;
     private String search;
     private ApplicationStatus status;
+    private WorkMode workMode;
     private String sortBy = "createdAt";
     private String sortDirection = "desc";
 
