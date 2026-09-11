@@ -3,6 +3,8 @@ import type {
   WorkMode,
   JobType,
   Interview,
+  Seniority,
+  BulletTone,
 } from "@/lib/types";
 
 // ── Label Maps ────────────────────────────────────────────────────────────────
@@ -186,3 +188,22 @@ export function formatEnum(value: string): string {
     .toLowerCase()
     .replace(/\b\w/g, (c) => c.toUpperCase());
 }
+
+// ── AI Bullet Generation Labels ──────────────────────────────────────────────
+
+export const seniorityLabels: Record<Seniority, string> = {
+  JUNIOR: "Junior",
+  MID_LEVEL: "Mid-Level",
+  SENIOR: "Senior",
+  PRINCIPAL: "Principal",
+};
+
+export const bulletToneLabels: Record<BulletTone, string> = {
+  IMPACT: "Impact",
+  STAR: "STAR Method",
+  TECHNICAL: "Technical",
+  LEADERSHIP: "Leadership",
+  QUANTITATIVE: "Quantitative",
+  COLLABORATIVE: "Collaborative",
+  INNOVATION: "Innovation",
+};
