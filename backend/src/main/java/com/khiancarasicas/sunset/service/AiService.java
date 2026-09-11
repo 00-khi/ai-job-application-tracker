@@ -31,14 +31,19 @@ public class AiService {
 
         String userPrompt = buildBulletUserPrompt(request);
 
-        BulletGenerationResponse response = chatClient.prompt()
-                .system(bulletGenerationSystemPrompt)
-                .user(userPrompt)
-                .call()
-                .entity(BulletGenerationResponse.class, spec -> spec.validateSchema());
+        try {
+            BulletGenerationResponse response = chatClient.prompt()
+                    .system(bulletGenerationSystemPrompt)
+                    .user(userPrompt)
+                    .call()
+                    .entity(BulletGenerationResponse.class, spec -> spec.validateSchema());
 
-        logger.info("Generated {} bullets", response.bullets().size());
-        return response;
+            logger.info("Generated {} bullets", response.bullets().size());
+            return response;
+        } catch (Exception e) {
+            logger.error("AI generation failed - prompt: {}", userPrompt, e);
+            throw new RuntimeException("Failed to generate bullets: " + e.getMessage(), e);
+        }
     }
 
     private String buildBulletUserPrompt(BulletGenerationRequest request) {
