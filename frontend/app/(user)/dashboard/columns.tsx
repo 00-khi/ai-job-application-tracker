@@ -84,6 +84,7 @@ export function columns({
       header: "Company",
       accessorKey: "company",
       sortable: true,
+      className: "max-w-[200px] truncate",
       cell: (row) =>
         row.company ? (
           <span className="font-semibold">{row.company}</span>
@@ -96,6 +97,7 @@ export function columns({
       header: "Title",
       accessorKey: "title",
       sortable: true,
+      className: "max-w-[250px] truncate",
       cell: (row) =>
         row.title ? (
           <span className="text-muted-foreground">{row.title}</span>
@@ -144,6 +146,7 @@ export function columns({
       header: "Location",
       accessorKey: "location",
       sortable: true,
+      className: "max-w-[200px] truncate",
       cell: (row) => {
         const hasLocation = !!row.location;
         const hasWorkMode = !!row.workMode;
@@ -159,6 +162,7 @@ export function columns({
       id: "salary",
       header: "Salary",
       sortable: true,
+      className: "max-w-[180px] truncate",
       cell: (row) => {
         const { salaryMin, salaryMax, currency } = row;
         if (salaryMin == null && salaryMax == null) {

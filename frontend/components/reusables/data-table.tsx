@@ -62,6 +62,7 @@ interface Column<T> {
   cell?: (row: T) => React.ReactNode;
   hide?: boolean;
   hideFromColumnToggle?: boolean;
+  className?: string;
 }
 
 interface DataTableProps<T> {
@@ -206,6 +207,7 @@ function DataTable<T>({
                   key={column.id}
                   className={cn(
                     column.sortable && "cursor-pointer select-none hover:text-foreground",
+                    column.className,
                   )}
                   onClick={column.sortable ? () => handleSort(column.id) : undefined}
                 >
@@ -234,7 +236,7 @@ function DataTable<T>({
                   onClick={() => onRowClick?.(row)}
                 >
                   {visibleColumns.map((column) => (
-                    <TableCell key={column.id}>
+                    <TableCell key={column.id} className={column.className}>
                       {column.cell
                         ? column.cell(row)
                         : column.accessorKey
