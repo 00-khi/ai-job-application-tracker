@@ -23,6 +23,19 @@ spring:
         jwt:
           issuer-uri: ${SUNSET_SUPABASE_JWT_ISSUER}
 
+  ai:
+    model:
+      chat: openai
+      embedding: none
+    openai:
+      api-key: ${NVIDIA_API_KEY}
+      base-url: https://integrate.api.nvidia.com/v1
+      chat:
+        model: deepseek-ai/deepseek-v4-flash-0731
+        max-tokens: 2048
+        options:
+          temperature: 0.7
+
 jwt:
   secret: ${JWT_SECRET}
 
