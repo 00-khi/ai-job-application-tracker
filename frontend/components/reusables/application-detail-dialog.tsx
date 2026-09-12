@@ -188,12 +188,24 @@ function ApplicationDetailDialog({
             value={application.contactEmail || "Not specified"}
             isEmpty={!application.contactEmail}
           />
-          <DetailRow
-            icon={ExternalLink}
-            label="Job URL"
-            value={application.jobUrl || "Not specified"}
-            isEmpty={!application.jobUrl}
-          />
+          <div className="flex items-start gap-2">
+            <ExternalLink className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
+            <div className="min-w-0">
+              <p className="text-xs text-muted-foreground">Job URL</p>
+              {application.jobUrl ? (
+                <a
+                  href={application.jobUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm font-medium text-primary underline-offset-4 hover:underline"
+                >
+                  Visit
+                </a>
+              ) : (
+                <p className="text-sm font-medium text-muted-foreground italic">Not specified</p>
+              )}
+            </div>
+          </div>
         </div>
 
         {application.notes && (
