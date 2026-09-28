@@ -18,7 +18,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2Icon, XIcon } from "lucide-react";
+import { Loader2Icon } from "lucide-react";
 import type { Seniority, BulletTone, BulletGenerationRequest } from "@/lib/types";
 import { seniorityLabels, bulletToneLabels } from "@/lib/enum-labels";
 
@@ -30,42 +30,28 @@ interface BulletGeneratorFormProps {
 export function BulletGeneratorForm({ onGenerate, loading }: BulletGeneratorFormProps) {
   const [jobTitle, setJobTitle] = useState("");
   const [seniority, setSeniority] = useState<Seniority | "">("");
-  const [skills, setSkills] = useState<string[]>([]);
-  const [skillInput, setSkillInput] = useState("");
+  const [skillsText, setSkillsText] = useState("");
   const [achievements, setAchievements] = useState("");
   const [existingBullets, setExistingBullets] = useState("");
   const [tone, setTone] = useState<BulletTone | "">("");
 
-  function handleSkillInputKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      const trimmed = skillInput.trim();
-      if (trimmed && !skills.includes(trimmed)) {
-        setSkills((prev) => [...prev, trimmed]);
-      }
-      setSkillInput("");
-    }
-  }
-
-  function removeSkill(skill: string) {
-    setSkills((prev) => prev.filter((s) => s !== skill));
-  }
+  const parsedSkills = skillsText.split(",").map((s) => s.trim()).filter(Boolean);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!jobTitle.trim() || !seniority || !achievements.trim() || !tone || skills.length === 0) return;
+    if (!jobTitle.trim() || !seniority || !achievements.trim() || !tone || parsedSkills.length === 0) return;
 
     await onGenerate({
       jobTitle: jobTitle.trim(),
       seniority: seniority as Seniority,
-      skills,
+      skills: parsedSkills,
       achievements: achievements.trim(),
       existingBullets: existingBullets.trim() || undefined,
       tone: tone as BulletTone,
     });
   }
 
-  const isDisabled = loading || !jobTitle.trim() || !seniority || !achievements.trim() || !tone || skills.length === 0;
+  const isDisabled = loading || !jobTitle.trim() || !seniority || !achievements.trim() || !tone || parsedSkills.length === 0;
 
   return (
     <Card>
@@ -133,31 +119,11 @@ export function BulletGeneratorForm({ onGenerate, loading }: BulletGeneratorForm
               <FieldLabel htmlFor="skills">Skills</FieldLabel>
               <Input
                 id="skills"
-                placeholder="Type a skill and press Enter"
-                value={skillInput}
-                onChange={(e) => setSkillInput(e.target.value)}
-                onKeyDown={handleSkillInputKeyDown}
+                placeholder="Comma-separated, e.g. react, typescript"
+                value={skillsText}
+                onChange={(e) => setSkillsText(e.target.value)}
               />
-              <FieldDescription>Press Enter to add each skill</FieldDescription>
-              {skills.length > 0 && (
-                <div className="flex flex-wrap gap-2 mt-2">
-                  {skills.map((skill) => (
-                    <span
-                      key={skill}
-                      className="inline-flex items-center gap-1 rounded-full bg-secondary px-2.5 py-0.5 text-xs text-secondary-foreground"
-                    >
-                      {skill}
-                      <button
-                        type="button"
-                        onClick={() => removeSkill(skill)}
-                        className="ml-0.5 rounded-full hover:bg-muted p-0.5"
-                      >
-                        <XIcon className="h-3 w-3" />
-                      </button>
-                    </span>
-                  ))}
-                </div>
-              )}
+              <FieldDescription>Separate skills with commas</FieldDescription>
             </Field>
 
             <Field>
