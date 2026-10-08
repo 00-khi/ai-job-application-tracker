@@ -114,3 +114,108 @@ export interface BulletGenerationRequest {
 export interface BulletGenerationResponse {
   bullets: string[];
 }
+
+// ── AI Job Fit Types ─────────────────────────────────────────────────────────
+
+export type ScoreLabel = "POOR" | "WEAK" | "FAIR" | "STRONG" | "ELITE";
+
+export type Severity = "HIGH" | "MEDIUM" | "LOW";
+
+export type Priority = "HIGH" | "MEDIUM" | "LOW";
+
+export type Strictness = "STRICT" | "BALANCED" | "LENIENT";
+
+export interface JobFitRequest {
+  resume: string;
+  jobDescription: string;
+  strictness: Strictness;
+}
+
+export interface ScoreBreakdownItem {
+  dimension: string;
+  score: number;
+  comment: string;
+}
+
+export interface StrengthItem {
+  area: string;
+  detail: string;
+  whyItMatters: string;
+}
+
+export interface WeaknessItem {
+  area: string;
+  detail: string;
+  impact: string;
+}
+
+export interface ScoredAnalysis {
+  rating: number;
+  summary: string;
+  findings: string[];
+}
+
+export interface PositionDimension {
+  dimension: string;
+  score: number;
+}
+
+export interface RecommendedPosition {
+  position: string;
+  fitScore: number;
+  dimensions: PositionDimension[];
+}
+
+export interface RedFlag {
+  flag: string;
+  severity: Severity;
+  detail: string;
+}
+
+export interface AtsAnalysis {
+  score: number;
+  keywordMatchPercent: number;
+  missingKeywords: string[];
+  formatIssues: string[];
+  assessment: string;
+}
+
+export interface SectionImprovement {
+  section: string;
+  issue: string;
+  recommendation: string;
+  priority: Priority;
+}
+
+export interface BulletImprovement {
+  original: string;
+  improved: string;
+  reason: string;
+}
+
+export interface ActionPlanItem {
+  priority: Priority;
+  action: string;
+  timeframe: string;
+  expectedImpact: string;
+}
+
+export interface JobFitResponse {
+  overallScore: number;
+  scoreLabel: ScoreLabel;
+  interviewProbability: number;
+  executiveAssessment: string;
+  scoreBreakdown: ScoreBreakdownItem[];
+  strongestParts: StrengthItem[];
+  weakestParts: WeaknessItem[];
+  experienceAnalysis: ScoredAnalysis;
+  projectAnalysis: ScoredAnalysis;
+  metricsImpactAnalysis: ScoredAnalysis;
+  careerDirection: string;
+  recommendedPositions: RecommendedPosition[];
+  redFlags: RedFlag[];
+  atsAnalysis: AtsAnalysis;
+  sectionImprovements: SectionImprovement[];
+  bulletImprovements: BulletImprovement[];
+  actionPlan: ActionPlanItem[];
+}

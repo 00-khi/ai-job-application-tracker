@@ -5,6 +5,10 @@ import type {
   Interview,
   Seniority,
   BulletTone,
+  ScoreLabel,
+  Severity,
+  Priority,
+  Strictness,
 } from "@/lib/types";
 
 // ── Label Maps ────────────────────────────────────────────────────────────────
@@ -206,4 +210,105 @@ export const bulletToneLabels: Record<BulletTone, string> = {
   QUANTITATIVE: "Quantitative",
   COLLABORATIVE: "Collaborative",
   INNOVATION: "Innovation",
+};
+
+// ── AI Job Fit Labels ────────────────────────────────────────────────────────
+
+export const strictnessLabels: Record<Strictness, string> = {
+  STRICT: "Strict",
+  BALANCED: "Balanced",
+  LENIENT: "Lenient",
+};
+
+export const scoreLabelLabels: Record<ScoreLabel, string> = {
+  POOR: "Poor",
+  WEAK: "Weak",
+  FAIR: "Fair",
+  STRONG: "Strong",
+  ELITE: "Elite",
+};
+
+export const scoreLabelConfig: Record<
+  ScoreLabel,
+  { label: string; className: string }
+> = {
+  POOR: {
+    label: "Poor",
+    className:
+      "border-red-300 text-red-600 dark:border-red-600 dark:text-red-400",
+  },
+  WEAK: {
+    label: "Weak",
+    className:
+      "border-amber-300 text-amber-600 dark:border-amber-600 dark:text-amber-400",
+  },
+  FAIR: {
+    label: "Fair",
+    className:
+      "border-blue-300 text-blue-600 dark:border-blue-600 dark:text-blue-400",
+  },
+  STRONG: {
+    label: "Strong",
+    className:
+      "border-green-300 text-green-600 dark:border-green-600 dark:text-green-400",
+  },
+  ELITE: {
+    label: "Elite",
+    className:
+      "border-emerald-300 text-emerald-600 dark:border-emerald-600 dark:text-emerald-400",
+  },
+};
+
+export const severityLabels: Record<Severity, string> = {
+  HIGH: "High",
+  MEDIUM: "Medium",
+  LOW: "Low",
+};
+
+export const severityConfig: Record<
+  Severity,
+  { label: string; className: string }
+> = {
+  HIGH: {
+    label: "High",
+    className:
+      "border-destructive/30 text-destructive dark:border-destructive/50",
+  },
+  MEDIUM: {
+    label: "Medium",
+    className:
+      "border-amber-300 text-amber-600 dark:border-amber-600 dark:text-amber-400",
+  },
+  LOW: {
+    label: "Low",
+    className:
+      "border-gray-300 text-gray-600 dark:border-gray-600 dark:text-gray-400",
+  },
+};
+
+export const priorityLabels: Record<Priority, string> = {
+  HIGH: "High",
+  MEDIUM: "Medium",
+  LOW: "Low",
+};
+
+export const priorityConfig: Record<
+  Priority,
+  { label: string; className: string }
+> = {
+  HIGH: {
+    label: "High",
+    className:
+      "border-destructive/30 text-destructive dark:border-destructive/50",
+  },
+  MEDIUM: {
+    label: "Medium",
+    className:
+      "border-amber-300 text-amber-600 dark:border-amber-600 dark:text-amber-400",
+  },
+  LOW: {
+    label: "Low",
+    className:
+      "border-gray-300 text-gray-600 dark:border-gray-600 dark:text-gray-400",
+  },
 };
