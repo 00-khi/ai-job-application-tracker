@@ -35,18 +35,21 @@ jobs:
             exit 1
           fi
 
-      - name: Build backend image
+      - name: Create app schema in Postgres
         run: |
-          docker build ./backend \
-            --tag sunset-backend \
-            --cache-from type=gha \
-            --cache-to type=gha,mode=max
+          docker run --rm --network host -e PGPASSWORD=sunset postgres:16 \
+            psql -h 127.0.0.1 -p 5432 -U sunset -d app \
+            -c "CREATE SCHEMA IF NOT EXISTS app;"
+
+      - name: Build backend image
+        run: docker build ./backend --tag sunset-backend
 
       - name: Run backend container
         run: |
           docker run -d --name backend \
             -p 8080:8080 \
-            -e SUNSET_DB_URL="jdbc:postgresql://localhost:5432/app" \
+            --add-host=host.docker.internal:host-gateway \
+            -e SUNSET_DB_URL="jdbc:postgresql://host.docker.internal:5432/app" \
             -e SUNSET_DB_USERNAME=sunset \
             -e SUNSET_DB_PASSWORD=sunset \
             -e JWT_SECRET=smoke-test-dummy \
@@ -56,7 +59,7 @@ jobs:
       - name: Wait for backend to become healthy
         run: |
           for i in $(seq 1 30); do
-            if curl -fsS http://localhost:8080/actuator/health; then
+            if curl -fsS http://localhost:8080/actuator/health | grep -q '"status":"UP"'; then
               echo " — healthy after ${i} attempt(s)"
               exit 0
             fi
