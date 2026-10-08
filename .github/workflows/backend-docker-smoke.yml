@@ -1,0 +1,74 @@
+name: Backend Docker Smoke Test
+
+on:
+  workflow_dispatch:
+
+jobs:
+  smoke-test:
+    runs-on: ubuntu-latest
+    environment: production
+    timeout-minutes: 30
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: sunset
+          POSTGRES_PASSWORD: sunset
+          POSTGRES_DB: app
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Check required secret
+        run: |
+          if [ -z "${{ secrets.SUNSET_SUPABASE_JWT_ISSUER }}" ]; then
+            echo "::error::SUNSET_SUPABASE_JWT_ISSUER secret is not set"
+            exit 1
+          fi
+
+      - name: Build backend image
+        run: |
+          docker build ./backend \
+            --tag sunset-backend \
+            --cache-from type=gha \
+            --cache-to type=gha,mode=max
+
+      - name: Run backend container
+        run: |
+          docker run -d --name backend \
+            -p 8080:8080 \
+            -e SUNSET_DB_URL="jdbc:postgresql://localhost:5432/app" \
+            -e SUNSET_DB_USERNAME=sunset \
+            -e SUNSET_DB_PASSWORD=sunset \
+            -e JWT_SECRET=smoke-test-dummy \
+            -e SUNSET_SUPABASE_JWT_ISSUER="${{ secrets.SUNSET_SUPABASE_JWT_ISSUER }}" \
+            sunset-backend
+
+      - name: Wait for backend to become healthy
+        run: |
+          for i in $(seq 1 30); do
+            if curl -fsS http://localhost:8080/actuator/health; then
+              echo " — healthy after ${i} attempt(s)"
+              exit 0
+            fi
+            echo "attempt $i failed, retrying in 5s..."
+            sleep 5
+          done
+          echo "::error::Backend did not become healthy within 150s"
+          exit 1
+
+      - name: Test public endpoint
+        run: curl -fsS http://localhost:8080/api/public/test
+
+      - name: Show container logs on failure
+        if: failure()
+        run: docker logs backend
