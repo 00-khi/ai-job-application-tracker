@@ -22,6 +22,7 @@ import {
   ClockIcon,
   ArrowRightIcon,
 } from "lucide-react";
+import { redirect } from "next/navigation";
 
 const features = [
   {
@@ -51,6 +52,8 @@ const footerLinks = [
 
 export default function LandingPage() {
   const { user, loading } = useAuth();
+
+  redirect(user ? "/dashboard" : "/login");
 
   const ctaHref = user ? "/dashboard" : "/signup";
   const ctaLabel = user ? "Go to dashboard" : "Get started";
