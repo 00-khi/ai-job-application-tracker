@@ -45,11 +45,11 @@ const navMain = [
   //   url: "/cover-letter",
   //   icon: <MailIcon />,
   // },
-  // {
-  //   title: "Job Fit",
-  //   url: "/job-fit",
-  //   icon: <BarChart3Icon />,
-  // },
+  {
+    title: "Job Fit",
+    url: "/job-fit",
+    icon: <BarChart3Icon />,
+  },
   // {
   //   title: "Networking",
   //   url: "/networking",

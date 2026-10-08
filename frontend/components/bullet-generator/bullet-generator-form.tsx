@@ -131,6 +131,7 @@ export function BulletGeneratorForm({ onGenerate, loading }: BulletGeneratorForm
               <Textarea
                 id="achievements"
                 placeholder="Describe your key achievements, e.g. 'Led team of 5, increased revenue by 30%'"
+                className="max-h-80 overflow-y-auto"
                 rows={3}
                 required
                 value={achievements}
@@ -143,6 +144,7 @@ export function BulletGeneratorForm({ onGenerate, loading }: BulletGeneratorForm
               <Textarea
                 id="existingBullets"
                 placeholder="Optional: paste existing bullets to improve them"
+                className="max-h-80 overflow-y-auto"
                 rows={3}
                 value={existingBullets}
                 onChange={(e) => setExistingBullets(e.target.value)}
