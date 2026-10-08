@@ -3,6 +3,8 @@ package com.khiancarasicas.sunset.util;
 import com.khiancarasicas.sunset.model.dto.BulletGenerationRequest;
 import com.khiancarasicas.sunset.model.dto.InterviewRequest;
 import com.khiancarasicas.sunset.model.dto.JobApplicationRequest;
+import com.khiancarasicas.sunset.model.dto.JobFitRequest;
+import com.khiancarasicas.sunset.model.dto.JobFitResponse;
 import com.khiancarasicas.sunset.model.entity.Interview;
 import com.khiancarasicas.sunset.model.entity.JobApplication;
 import com.khiancarasicas.sunset.model.enums.*;
@@ -109,6 +111,68 @@ public final class TestDataFactory {
                 "Built a caching layer that reduced API latency by 40%, designed job queue processing 10K daily tasks",
                 null,
                 BulletTone.IMPACT
+        );
+    }
+
+    public static JobFitRequest createJobFitRequest() {
+        return new JobFitRequest(
+                "Senior frontend developer with 5 years of experience building React and TypeScript applications, "
+                        + "led a redesign that improved page load time by 35% and mentored 2 junior developers",
+                "We are hiring a Senior Frontend Developer to own our design system, ship accessible React features, "
+                        + "and collaborate with product and design on a customer-facing dashboard",
+                Strictness.BALANCED
+        );
+    }
+
+    public static JobFitResponse createJobFitResponse() {
+        return new JobFitResponse(
+                78,
+                "STRONG",
+                62,
+                "The resume shows solid frontend depth and measurable performance work that maps well to the target role, "
+                        + "but design-system ownership and accessibility experience are only lightly evidenced.",
+                List.of(new JobFitResponse.ScoreBreakdownItem("Required Qualifications Match", 80,
+                                "Meets the core React and TypeScript requirements stated in the job description")),
+                List.of(new JobFitResponse.StrengthItem("Performance optimization",
+                                "Improved page load time by 35%",
+                                "Directly demonstrates measurable impact on user experience")),
+                List.of(new JobFitResponse.WeaknessItem("Accessibility",
+                                "No WCAG or assistive-technology work mentioned",
+                                "The job description requires accessible feature delivery")),
+                new JobFitResponse.ScoredAnalysis(82,
+                        "Five years of progressive frontend ownership with leadership signals",
+                        List.of("Led a redesign affecting page load performance")),
+                new JobFitResponse.ScoredAnalysis(75,
+                        "Projects show breadth but limited scale evidence",
+                        List.of("Redesign project is the strongest portfolio piece")),
+                new JobFitResponse.ScoredAnalysis(70,
+                        "One quantified metric across the resume",
+                        List.of("35% page load improvement is the only number cited")),
+                "Frontend specialization with a path toward design-system and platform ownership",
+                List.of(new JobFitResponse.RecommendedPosition("Senior Frontend Developer", 84,
+                                List.of(new JobFitResponse.PositionDimension("Skills Match", 88),
+                                        new JobFitResponse.PositionDimension("Experience", 85),
+                                        new JobFitResponse.PositionDimension("Seniority Fit", 80),
+                                        new JobFitResponse.PositionDimension("Domain Fit", 82),
+                                        new JobFitResponse.PositionDimension("Growth Potential", 86)))),
+                List.of(new JobFitResponse.RedFlag("Missing accessibility keywords", "MEDIUM",
+                        "The resume never mentions WCAG, ARIA, or screen-reader testing")),
+                new JobFitResponse.AtsAnalysis(74, 68,
+                        List.of("design system", "WCAG"),
+                        List.of("Unusual date formatting in experience section"),
+                        "Parseable overall but keyword coverage falls short of the job description"),
+                List.of(new JobFitResponse.SectionImprovement("Skills",
+                                "No accessibility tooling listed",
+                                "Add concrete accessibility skills you actually have",
+                                "HIGH")),
+                List.of(new JobFitResponse.BulletImprovement(
+                                "Responsible for improving website performance",
+                                "Improved page load time by 35% by refactoring image loading and code splitting",
+                                "Replaces duty-based phrasing with a quantified result")),
+                List.of(new JobFitResponse.ActionPlanItem("HIGH",
+                                "Add accessibility keywords that match your real experience",
+                                "This week",
+                                "Higher keyword match percentage in ATS screening"))
         );
     }
 }

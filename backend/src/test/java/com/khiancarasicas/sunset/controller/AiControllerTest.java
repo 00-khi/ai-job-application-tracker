@@ -3,8 +3,11 @@ package com.khiancarasicas.sunset.controller;
 import com.khiancarasicas.sunset.config.GlobalExceptionHandler;
 import com.khiancarasicas.sunset.model.dto.BulletGenerationRequest;
 import com.khiancarasicas.sunset.model.dto.BulletGenerationResponse;
+import com.khiancarasicas.sunset.model.dto.JobFitRequest;
+import com.khiancarasicas.sunset.model.dto.JobFitResponse;
 import com.khiancarasicas.sunset.model.enums.BulletTone;
 import com.khiancarasicas.sunset.model.enums.Seniority;
+import com.khiancarasicas.sunset.model.enums.Strictness;
 import com.khiancarasicas.sunset.service.AiService;
 import com.khiancarasicas.sunset.util.TestDataFactory;
 import org.junit.jupiter.api.Test;
@@ -177,6 +180,97 @@ class AiControllerTest {
     @Test
     void generateBullets_withoutJwt_returns403() throws Exception {
         mockMvc.perform(post("/api/ai/bullets")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{}"))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void analyzeJobFit_validRequest_returns200() throws Exception {
+        JobFitRequest request = TestDataFactory.createJobFitRequest();
+        JobFitResponse response = TestDataFactory.createJobFitResponse();
+
+        when(aiService.analyzeJobFit(any(JobFitRequest.class))).thenReturn(response);
+
+        mockMvc.perform(post("/api/ai/job-fit")
+                        .with(jwt().jwt(j -> j.header("alg", "none")
+                                .claim("sub", TestDataFactory.DEFAULT_USER_ID)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.overallScore", is(78)))
+                .andExpect(jsonPath("$.scoreLabel", is("STRONG")))
+                .andExpect(jsonPath("$.scoreBreakdown", hasSize(1)))
+                .andExpect(jsonPath("$.atsAnalysis.score", is(74)))
+                .andExpect(jsonPath("$.recommendedPositions[0].dimensions[0].dimension", is("Skills Match")))
+                .andExpect(jsonPath("$.redFlags[0].severity", is("MEDIUM")))
+                .andExpect(jsonPath("$.actionPlan[0].priority", is("HIGH")));
+    }
+
+    @Test
+    void analyzeJobFit_missingResume_returns400() throws Exception {
+        JobFitRequest request = new JobFitRequest(
+                null,
+                "We are hiring a Senior Frontend Developer",
+                Strictness.BALANCED
+        );
+
+        mockMvc.perform(post("/api/ai/job-fit")
+                        .with(jwt().jwt(j -> j.header("alg", "none")
+                                .claim("sub", TestDataFactory.DEFAULT_USER_ID)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.resume", is("Resume is required")));
+    }
+
+    @Test
+    void analyzeJobFit_missingJobDescription_returns400() throws Exception {
+        JobFitRequest request = new JobFitRequest(
+                "Senior frontend developer with 5 years of experience",
+                null,
+                Strictness.BALANCED
+        );
+
+        mockMvc.perform(post("/api/ai/job-fit")
+                        .with(jwt().jwt(j -> j.header("alg", "none")
+                                .claim("sub", TestDataFactory.DEFAULT_USER_ID)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.jobDescription", is("Job description is required")));
+    }
+
+    @Test
+    void analyzeJobFit_missingStrictness_returns400() throws Exception {
+        JobFitRequest request = new JobFitRequest(
+                "Senior frontend developer with 5 years of experience",
+                "We are hiring a Senior Frontend Developer",
+                null
+        );
+
+        mockMvc.perform(post("/api/ai/job-fit")
+                        .with(jwt().jwt(j -> j.header("alg", "none")
+                                .claim("sub", TestDataFactory.DEFAULT_USER_ID)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.strictness", is("Strictness is required")));
+    }
+
+    @Test
+    void analyzeJobFit_emptyBody_returns400() throws Exception {
+        mockMvc.perform(post("/api/ai/job-fit")
+                        .with(jwt().jwt(j -> j.header("alg", "none")
+                                .claim("sub", TestDataFactory.DEFAULT_USER_ID)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{}"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void analyzeJobFit_withoutJwt_returns403() throws Exception {
+        mockMvc.perform(post("/api/ai/job-fit")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{}"))
                 .andExpect(status().isForbidden());

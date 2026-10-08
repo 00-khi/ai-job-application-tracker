@@ -2,6 +2,8 @@ package com.khiancarasicas.sunset.controller;
 
 import com.khiancarasicas.sunset.model.dto.BulletGenerationRequest;
 import com.khiancarasicas.sunset.model.dto.BulletGenerationResponse;
+import com.khiancarasicas.sunset.model.dto.JobFitRequest;
+import com.khiancarasicas.sunset.model.dto.JobFitResponse;
 import com.khiancarasicas.sunset.service.AiService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +26,12 @@ public class AiController {
     public ResponseEntity<BulletGenerationResponse> generateBullets(
             @Valid @RequestBody BulletGenerationRequest request) {
         BulletGenerationResponse response = aiService.generateBullets(request);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/job-fit")
+    public ResponseEntity<JobFitResponse> analyzeJobFit(@Valid @RequestBody JobFitRequest request) {
+        JobFitResponse response = aiService.analyzeJobFit(request);
         return ResponseEntity.ok(response);
     }
 }
